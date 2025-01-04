@@ -11,7 +11,7 @@ port = 8989 # 监听端口
 basePath = "" # 兼容LiberSpeed而保留, 无需求请不要修改
 
 [log]
-logFilePath = "/data/speedtest-go/log/speedtest-go.log" # 日志文件路径
+logFilePath = "/data/speedtest-ex/log/speedtest-ex.log" # 日志文件路径
 maxLogSize = 5 # MB 日志文件最大容量
 
 [ipinfo]
@@ -21,7 +21,7 @@ ipinfo_api_key = "" # ipinfo.io API key 若有可以填写
 
 [database]
 model = "bolt"  # 数据库类型, 目前仅支持BoltDB
-path = "/data/speedtest-go/db/speedtest.db" # 数据库文件路径
+path = "/data/speedtest-ex/db/speedtest.db" # 数据库文件路径
 
 [frontend]
 chartlist = 100 # 默认显示最近100条数据

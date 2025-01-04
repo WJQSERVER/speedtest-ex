@@ -46,6 +46,12 @@ func getHostIPInfo(ip string, cfg *config.Config) (CommonIPInfoResponse, error) 
 	}
 	defer resp.Body.Close()
 
+	// 检查非200状态码
+	if resp.StatusCode != 200 {
+		logWarning("self-host response status code: %s", resp.StatusCode)
+		return CommonIPInfoResponse{}, err
+	}
+
 	// 读取body
 	bodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {

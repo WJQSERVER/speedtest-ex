@@ -11,7 +11,7 @@ port = 8989 # Listening port
 basePath = "" # Retained for compatibility with LiberSpeed; do not modify if not needed
 
 [log]
-logFilePath = "/data/speedtest-go/log/speedtest-go.log" # Path to the log file
+logFilePath = "/data/speedtest-ex/log/speedtest-ex.log" # Path to the log file
 maxLogSize = 5 # MB Maximum size of the log file
 
 [ipinfo]
@@ -21,7 +21,7 @@ ipinfo_api_key = "" # ipinfo.io API key, if available
 
 [database]
 model = "bolt"  # Database type, currently only supports BoltDB
-path = "/data/speedtest-go/db/speedtest.db" # Path to the database file
+path = "/data/speedtest-ex/db/speedtest.db" # Path to the database file
 
 [frontend]
 chartlist = 100 # Default to display the most recent 100 entries
