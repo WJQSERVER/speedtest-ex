@@ -1,0 +1,22 @@
+[server]
+host = ""
+port = 8989
+basePath = ""
+
+[log]
+logFilePath = "/data/speedtest-go/log/speedtest-go.log"
+maxLogSize = 5 # MB
+
+[ipinfo]
+model = "ip" # ip(self-hosted) or ipinfo(ipinfo.io) todo
+ipinfo_url = "https://ip.1888866.xyz" #self-hosted only
+ipinfo_api_key = "" # ipinfo.io API key
+
+[database]
+model = "bolt" 
+path = "/data/speedtest-go/db/speedtest.db"
+
+[frontend]
+chartlist = 100 # 默认显示最近100条数据
+
+
