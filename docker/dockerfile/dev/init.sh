@@ -1,6 +1,6 @@
 #!/bin/sh
 
-APPLICATION=speedtest-go
+APPLICATION=speedtest-ex
 
 # 检查并复制 config.toml
 if [ ! -f /data/${APPLICATION}/config/config.toml ]; then
