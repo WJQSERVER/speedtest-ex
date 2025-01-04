@@ -1,0 +1,11 @@
+version: '3'
+services:
+  speedtest-ex:
+    image: 'wjqserver/speedtest-ex:latest'
+    restart: always
+    volumes:
+      - './speedtest-ex/config:/data/speedtest-ex/config'
+      - './speedtest-ex/log:/data/speedtest-ex/log'
+      - './speedtest-ex/db:/data/speedtest-ex/db'
+    ports:
+      - '8989:8989'

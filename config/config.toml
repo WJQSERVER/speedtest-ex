@@ -1,0 +1,20 @@
+[server]
+basePath = "" # 兼容LiberSpeed而保留, 无需求请不要修改
+host = "0.0.0.0" # 监听地址
+port = 8989 # 监听端口
+
+[log]
+logFilePath = "/data/speedtest-ex/log/speedtest-ex.log" # 日志文件路径
+maxLogSize = 5 # MB 日志文件最大容量
+
+[ipinfo]
+ipinfo_api_key = "" # ipinfo.io API key 若有可以填写
+ipinfo_url = "" #自托管时请填写ipinfo.io的API地址
+model = "ipinfo" # ip(自托管) 或 ipinfo(ipinfo.io)
+
+[database]
+model = "bolt" # 数据库类型, 目前仅支持BoltDB
+path = "/data/speedtest-ex/db/speedtest.db" # 数据库文件路径
+
+[frontend]
+chartlist = 100 # 默认显示最近100条数据

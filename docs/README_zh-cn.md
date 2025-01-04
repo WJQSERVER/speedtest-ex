@@ -6,8 +6,6 @@
 [speedtest-go](https://github.com/librespeed/speedtest-go)是使用Go语言重新实现的[librespeed](https://github.com/librespeed/speedtest)后端, 而本项目是基于[speedtest-go](https://github.com/librespeed/speedtest-go)项目再次重构.
 LiberSpeed是一个开源的网络测速项目, 其使用php实现后端, 而本项目则使用Go语言和Gin框架实现后端, 使程序更加轻量化且易于部署.
 
-zh-cn | [en](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/README_en.md) | [zh-tw](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/README_zh-tw.md) | [cantonese|hk](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/README_hk.md)
-
 **❗ 注意**：基于网页测速的原理，程序会生成无用块供测速者下载来计算真实下行带宽，一定程度上存在被恶意刷流量的风险，在对外分享你的测速页面后，请注意观察服务器流量使用情况，避免流量使用异常。
 
 ## 特性

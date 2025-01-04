@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测速结果图表</title>
+    <!-- 使用官方 CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"
+        integrity="sha512-ElRFoEQdI5Ht6kZvyzXhYG9NqjtkmlkfYk0wr6wHxU9JEHakS7UJZNeml5ALk+8IKlU6jDgMabC3vkumRokgJA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- 如果 CDN 加载失败，使用备用地址 -->
+    <script>
+    function loadBackupCDN() {
+        if (typeof Chart === 'undefined') {
+           const script = document.createElement('script');
+                       script.src = 'https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js';
+            script.onerror = () => console.error('备用 CDN 加载失败');
+            document.head.appendChild(script);
+        }
+    }
+    </script>
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5e0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .chart-wrapper {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .info-panel {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .info-content {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .info-item {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .refresh-button {
+            background-color: #0050a5;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            float: right;
+        }
+
+        .refresh-button:hover {
+            background-color: #8caec6;
+        }
+
+        /* 返回主页按钮样式 */
+        .back-home-button {
+            background-color: #4CAF50;
+            /* 绿色背景 */
+            color: white;
+            /* 白色文字 */
+            border: none;
+            /* 去掉边框 */
+            padding: 10px 20px;
+            /* 内边距 */
+            border-radius: 4px;
+            /* 圆角 */
+            cursor: pointer;
+            /* 鼠标悬停样式 */
+            margin-right: 15px;
+            /* 与刷新按钮的间距 */
+        }
+
+        /* 返回主页按钮悬停效果 */
+        .back-home-button:hover {
+            background-color: #45a049;
+            /* 悬停时的背景颜色 */
+        }
+        footer {
+            line-height: 1.25;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="info-panel">
+            <button class="back-home-button" onclick="window.location.href='/';">返回主页</button>
+            <button class="refresh-button" onclick="refreshData()">刷新数据</button>
+            <div class="info-title">最新测速结果</div>
+            <div class="info-content">
+                <div class="info-item">
+                    <div>下载速度: <span id="latest-download">-</span> Mbps</div>
+                    <div>上传速度: <span id="latest-upload">-</span> Mbps</div>
+                </div>
+                <div class="info-item">
+                    <div>延迟: <span id="latest-ping">-</span> ms</div>
+                    <div>抖动: <span id="latest-jitter">-</span> ms</div>
+                </div>
+                <div class="info-item">
+                    <div>ISP: <span id="latest-isp">-</span></div>
+                    <div>测试时间: <span id="latest-time">-</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-wrapper">
+            <div class="chart-title">下载/上传速度历史记录</div>
+            <canvas id="speedChart"></canvas>
+        </div>
+        <div class="chart-wrapper">
+            <div class="chart-title">延迟/抖动历史记录</div>
+            <canvas id="latencyChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        let speedChart = null;
+        let latencyChart = null;
+
+        // 格式化时间
+        function formatDate(date) {
+            return new Date(date).toLocaleString('zh-CN', {
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // 格式化 ISP 信息
+        function formatIspInfo(ispInfo) {
+            try {
+                if (typeof ispInfo === 'string') {
+                    const parsed = JSON.parse(ispInfo);
+                    if (parsed.processedString) {
+                        // 移除 IPv4 access 和 - 等无用信息
+                        return parsed.processedString
+                            .replace(' - ', ' ')
+                            .replace(' IPv4 access', '')
+                        //.replace('127.0.0.1', 'localhost');
+                    }
+                    return parsed.rawIspInfo?.org || '本地网络';
+                }
+                return ispInfo || '本地网络';
+            } catch (e) {
+                return ispInfo || '本地网络';
+            }
+        }
+
+        // 更新最新测速信息
+        function updateLatestInfo(data) {
+            if (data && data.length > 0) {
+                const latest = data[data.length - 1];
+                document.getElementById('latest-download').textContent = latest.download.toFixed(2);
+                document.getElementById('latest-upload').textContent = latest.upload.toFixed(2);
+                document.getElementById('latest-ping').textContent = latest.ping.toFixed(2);
+                document.getElementById('latest-jitter').textContent = latest.jitter.toFixed(2);
+                document.getElementById('latest-isp').textContent = formatIspInfo(latest.isp);
+                document.getElementById('latest-time').textContent = formatDate(latest.timestamp);
+            }
+        }
+
+        // 获取图表数据
+        async function fetchChartData() {
+            try {
+                const response = await fetch('/api/chart-data');
+                const data = await response.json();
+                return data.reverse(); // 反转数组使数据按时间正序显示
+            } catch (error) {
+                console.error('获取数据失败:', error);
+                return [];
+            }
+        }
+
+        // 创建速度图表的 tooltip 回调
+        function createSpeedTooltip(data) {
+            return {
+                callbacks: {
+                    label: function (context) {
+                        return context.dataset.label + ': ' + context.parsed.y.toFixed(2);
+                    },
+                    afterBody: function (tooltipItems) {
+                        const dataIndex = tooltipItems[0].dataIndex;
+                        const ispInfo = formatIspInfo(data[dataIndex].isp);
+                        return ['', `ISP: ${ispInfo}`];
+                    }
+                }
+            }
+        }
+
+        // 创建速度图表
+        function createSpeedChart(ctx, data) {
+            if (speedChart) {
+                speedChart.destroy();
+            }
+            speedChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.map(d => formatDate(d.timestamp)),
+                    datasets: [
+                        {
+                            label: '下载速度 (Mbps)',
+                            data: data.map(d => d.download),
+                            borderColor: '#df8d9e',
+                            backgroundColor: 'rgba(223, 141, 158, 0.3)',
+                            tension: 0.1,
+                            fill: true
+                        },
+                        {
+                            label: '上传速度 (Mbps)',
+                            data: data.map(d => d.upload),
+                            borderColor: '#385491',
+                            backgroundColor: 'rgba(56, 84, 145, 0.3)',
+                            tension: 0.1,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '速度 (Mbps)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: createSpeedTooltip(data)
+                    }
+                }
+            });
+        }
+
+        // 创建延迟图表
+        function createLatencyChart(ctx, data) {
+            if (latencyChart) {
+                latencyChart.destroy();
+            }
+            latencyChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.map(d => formatDate(d.timestamp)),
+                    datasets: [
+                        {
+                            label: '延迟 (ms)',
+                            data: data.map(d => d.ping),
+                            borderColor: '#88e4ee',
+                            backgroundColor: 'rgba(136, 228, 238, 0.3)',
+                            tension: 0.1,
+                            fill: true
+                        },
+                        {
+                            label: '抖动 (ms)',
+                            data: data.map(d => d.jitter),
+                            borderColor: '#901dd0',
+                            backgroundColor: 'rgba(144, 29, 208, 0.3)',
+                            tension: 0.1,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '时间 (ms)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return context.dataset.label + ': ' + context.parsed.y.toFixed(2);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 刷新数据
+        async function refreshData() {
+            const data = await fetchChartData();
+            if (data.length > 0) {
+                const speedCtx = document.getElementById('speedChart').getContext('2d');
+                const latencyCtx = document.getElementById('latencyChart').getContext('2d');
+
+                createSpeedChart(speedCtx, data);
+                createLatencyChart(latencyCtx, data);
+                updateLatestInfo(data);
+            }
+        }
+
+        // 初始化图表
+        refreshData();
+
+        // 每60秒自动刷新一次数据
+        setInterval(refreshData, 180000);
+    </script>
+</body>
+<footer>
+    <p>
+        Copyright &copy; 2025 WJQSERVER<br>
+        GitHub仓库地址：<a href="https://github.com/WJQSERVER/speedtest-ex">WJQSERVER/speedtest-ex</a>
+    </p>
+    <div id="visitor-info" style="text-align: center; margin-top: 15px;">
+        <p>您的IP地址: <span id="visitor-ip"></span></p>
+        <p>当前位置: <span id="visitor-country"></span> <img id="visitor-flag" src="" alt="" width="24" height="16"></p>
+    </div>
+    <script>
+        fetch('https://ip.1888866.xyz/api/ip-lookup')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('网络响应失败');
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('visitor-ip').textContent = data.ip;
+                document.getElementById('visitor-country').textContent = data.country_name;
+                document.getElementById('visitor-flag').src = `https://flagcdn.com/w20/${data.country_code.toLowerCase()}.png`;
+            })
+            .catch(error => {
+                console.error('获取地理位置信息失败:', error);
+                const visitorInfo = document.getElementById('visitor-info');
+                visitorInfo.innerHTML = '<p>无法获取您的地理位置信息，请稍后再试。</p>';
+            });
+    </script>
+</footer>
+
+</html>

@@ -1,0 +1,8 @@
+*.db
+dist/
+
+*.bak
+demo
+demo.toml
+*.log
+tmp/
