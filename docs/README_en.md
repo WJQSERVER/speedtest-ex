@@ -27,6 +27,12 @@ Refer to [docker-compose deployment of SpeedTest-EX](https://github.com/WJQSERVE
 ### Configuration File
 Refer to [configuration file description](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/config/config_en.md)
 
+## Frontend Page
+
+![SpeedTest-EX Index Page](https://webp.wjqserver.com/speedtest-ex/index.png)
+
+![SpeedTest-EX Chart Page](https://webp.wjqserver.com/speedtest-ex/chart.png)
+
 ## License
 Copyright (C) 2016-2020 Federico Dossena
 

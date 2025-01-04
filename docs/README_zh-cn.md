@@ -35,8 +35,11 @@ LiberSpeed是一个开源的网络测速项目, 其使用php实现后端, 而本
 
 参看[配置文件说明](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/config/config_zh-cn.md)
 
+## 前端页面
 
+![SpeedTest-EX Index Page](https://webp.wjqserver.com/speedtest-ex/index.png)
 
+![SpeedTest-EX Chart Page](https://webp.wjqserver.com/speedtest-ex/chart.png)
 
 
 ## License

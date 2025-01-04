@@ -27,6 +27,11 @@
 ### 配置文件
 參看[配置文件說明](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/config/config_zh-tw.md)
 
+## 截圖
+![SpeedTest-EX Index Page](https://webp.wjqserver.com/speedtest-ex/index.png)
+
+![SpeedTest-EX Chart Page](https://webp.wjqserver.com/speedtest-ex/chart.png)
+
 ## 许可证
 版權 (C) 2016-2020 Federico Dossena  
 
