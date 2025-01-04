@@ -28,8 +28,10 @@
 參看[配置檔案說明](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/config/config_zh-tw.md)
 
 ## 许可证
-版權 (C) 2016-2020 Federico Dossena  
-版權 (C) 2020 Maddie Zhan  
+版權 (C) 2016-2020 Federico Dossena
+
+版權 (C) 2020 Maddie Zhan
+  
 版權 (C) 2025 WJQSERVER  
 
 本程式是自由軟體：您可以根據自由軟體基金會發布的GNU較寬鬆公共授權條款重新分發和/或修改它，授權版本為3，或（根據您的選擇）任何更高版本。本程式的分發是希望它能有用，但不提供任何保證；甚至不提供適銷性或特定用途適用性的隱含保證。關於更多詳細資訊，請參見GNU通用公共授權。您應該已經收到與本程式一起提供的GNU較寬鬆公共授權的副本。如果沒有，請訪問<https://www.gnu.org/licenses/lgpl>。

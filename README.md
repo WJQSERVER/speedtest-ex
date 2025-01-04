@@ -43,7 +43,9 @@ zh-cn | [en](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/README_en.
 
 ## License
 Copyright (C) 2016-2020 Federico Dossena
+
 Copyright (C) 2020 Maddie Zhan
+
 Copyright (C) 2025 WJQSERVER
 
 This program is free software: you can redistribute it and/or modify
