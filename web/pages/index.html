@@ -152,14 +152,12 @@
         font-family: 'Noto Sans SC', sans-serif;
     }
     footer {
-            line-height: 1.25;
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 1rem;
-        }
+        line-height: 1.25;
+        text-align: center;
+        font-size: 1rem;
+        padding: 10px 0; /* 添加一些内边距 */
+        
+    }
 </style>
 <script type="text/javascript" src="speedtest.js"></script>
 </head>
@@ -246,28 +244,5 @@ setTimeout(function(){initUI();},100);
         Copyright &copy; 2025 WJQSERVER<br>
         GitHub仓库地址：<a href="https://github.com/WJQSERVER/speedtest-ex">WJQSERVER/speedtest-ex</a>
     </p>
-    <div id="visitor-info" style="text-align: center; margin-top: 15px;">
-        <p>您的IP地址: <span id="visitor-ip"></span></p>
-        <p>当前位置: <span id="visitor-country"></span> <img id="visitor-flag" src="" alt="" width="24" height="16"></p>
-    </div>
-    <script>
-        fetch('https://ip.1888866.xyz/api/ip-lookup')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('网络响应失败');
-                }
-                return response.json();
-            })
-            .then(data => {
-                document.getElementById('visitor-ip').textContent = data.ip;
-                document.getElementById('visitor-country').textContent = data.country_name;
-                document.getElementById('visitor-flag').src = `https://flagcdn.com/w20/${data.country_code.toLowerCase()}.png`;
-            })
-            .catch(error => {
-                console.error('获取地理位置信息失败:', error);
-                const visitorInfo = document.getElementById('visitor-info');
-                visitorInfo.innerHTML = '<p>无法获取您的地理位置信息，请稍后再试。</p>';
-            });
-    </script>
 </footer>
 </html>
