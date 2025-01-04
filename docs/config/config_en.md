@@ -16,7 +16,7 @@ maxLogSize = 5 # MB Maximum size of the log file
 
 [ipinfo]
 model = "ipinfo" # ip (self-hosted) or ipinfo (ipinfo.io)
-ipinfo_url = "" # Please fill in the API address of ipinfo.io when self-hosting
+ipinfo_url = "" # Please fill in the API address of your self-hosted ipinfo service when self-hosting
 ipinfo_api_key = "" # ipinfo.io API key, if available
 
 [database]
