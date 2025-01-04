@@ -3,7 +3,6 @@ dist/
 
 *.bak
 demo
-dev
 demo.toml
 *.log
 tmp/
