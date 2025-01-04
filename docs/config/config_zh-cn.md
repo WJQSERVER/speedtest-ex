@@ -16,7 +16,7 @@ maxLogSize = 5 # MB 日志文件最大容量
 
 [ipinfo]
 model = "ipinfo" # ip(自托管) 或 ipinfo(ipinfo.io)
-ipinfo_url = "" #自托管时请填写ipinfo.io的API地址
+ipinfo_url = "" #使用自托管时请填写您的ip服务地址
 ipinfo_api_key = "" # ipinfo.io API key 若有可以填写
 
 [database]
