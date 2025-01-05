@@ -1,0 +1,191 @@
+body,
+html {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    background-color: #e8eaed;
+    /* 更现代的浅灰背景 */
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 2.5% auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    /* 半透明白色背景 */
+    border-radius: 20px;
+    /* 圆角 */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    /* 柔和阴影 */
+}
+
+h1 {
+    text-align: center;
+    color: #075199;
+    margin-bottom: 30px;
+    font-size: 28px;
+}
+
+#startStopBtn {
+    display: block;
+    width: 200px;
+    height: 50px;
+    margin: 0 auto 30px;
+    background-color: #0050a5;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* 按钮阴影 */
+}
+
+#startStopBtn:hover {
+    background-color: #8caec6;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    /* 按钮悬停阴影 */
+}
+
+#startStopBtn.running {
+    background-color: #ff4d4f;
+}
+
+#startStopBtn.running:hover {
+    background-color: #ff7875;
+}
+
+.test-area {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+    gap: 20px;
+    /* 增加间距 */
+}
+
+.test-box {
+    background-color: rgba(255, 255, 255, 0.8);
+    /* 半透明效果 */
+    border-radius: 15px;
+    /* 圆角 */
+    padding: 20px;
+    margin: 10px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    /* 柔和阴影 */
+    flex: 1 1 200px;
+    max-width: 220px;
+    /* 限制宽度 */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* 添加交互动画 */
+}
+
+.test-box:hover {
+    transform: translateY(-5px);
+    /* 悬浮效果 */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.test-name {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #075199;
+    font-weight: bold;
+}
+
+.meter-text {
+    font-size: 28px;
+    font-weight: bold;
+    margin: 10px 0;
+    color: #333;
+}
+
+.unit {
+    font-size: 14px;
+    color: #888;
+}
+
+#ipArea {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #888;
+}
+
+#privacyPolicy {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.privacy-content {
+    background-color: white;
+    margin: 50px auto;
+    padding: 20px;
+    max-width: 600px;
+    border-radius: 20px;
+    /* 圆角 */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    /* 阴影 */
+}
+
+.privacy-link {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.privacy-link a {
+    color: #1890ff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.privacy-link a:hover {
+    text-decoration: underline;
+}
+
+#jump-button {
+    display: inline-block;
+    padding: 5px 10px;
+    /* 减小内边距 */
+    font-size: 14px;
+    /* 调整字体大小 */
+    color: white;
+    background-color: #0050a5;
+    border: none;
+    border-radius: 15px;
+    /* 圆角 */
+    text-decoration: none;
+    text-align: center;
+    transition: background-color 0.3s, transform 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#jump-button:hover {
+    background-color: #007bff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+button {
+    font-family: sans-serif;
+}
+
+footer {
+    line-height: 1.25;
+    text-align: center;
+    font-size: 1rem;
+    padding: 10px 0;
+    /* 添加一些内边距 */
+
+}
