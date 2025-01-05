@@ -1,11 +1,9 @@
 package ipinfo
 
 import (
-	"encoding/json"
 	"regexp"
 	"speedtest/config"
 	"speedtest/results"
-	"strings"
 
 	"github.com/WJQSERVER-STUDIO/go-utils/logger"
 )
@@ -33,8 +31,7 @@ var (
 )
 
 func GetIP(clientIP string, cfg *config.Config) results.Result {
-	logInfo("IP address: %s", clientIP) // for debug
-	var ret results.Result              // 创建结果结构体实例
+	var ret results.Result // 创建结果结构体实例
 	// 使用正则表达式匹配不同类型的 IP 地址
 	switch {
 	case localIPv6Regex.MatchString(clientIP):
@@ -60,19 +57,20 @@ func GetIP(clientIP string, cfg *config.Config) results.Result {
 	default:
 		ret.ProcessedString = clientIP // 其他情况，返回原始 IP 地址
 	}
-	// 检查处理结果中是否包含特定信息
-	if strings.Contains(ret.ProcessedString, " - ") {
-		// 将 ret 转换为 JSON 字符串
-		jsonData, err := json.Marshal(ret)
-		if err != nil {
-			// 如果转换失败，记录错误信息
-			logInfo("Error marshaling JSON: " + err.Error())
-		} else {
-			// 如果转换成功，记录 JSON 字符串
-			logInfo(string(jsonData))
-		}
-		return ret // 返回结果
-	}
+	/*
+		// 检查处理结果中是否包含特定信息
+		if strings.Contains(ret.ProcessedString, " - ") {
+			// 将 ret 转换为 JSON 字符串
+			jsonData, err := json.Marshal(ret)
+			if err != nil {
+				// 如果转换失败，记录错误信息
+				logInfo("Error marshaling JSON: " + err.Error())
+			} else {
+				// 如果转换成功，记录 JSON 字符串
+				logInfo(string(jsonData))
+			}
+			return ret // 返回结果
+		} */
 
 	ispInfo := getIPInfo(clientIP, cfg)
 	//ret.RawISPInfo = ispInfo // 存储原始 ISP 信息

@@ -1,23 +1,23 @@
 /*
 	LibreSpeed - Worker
-	by Federico Dossena
+	作者：Federico Dossena
 	https://github.com/librespeed/speedtest/
-	GNU LGPLv3 License
+	GNU LGPLv3 许可证
 */
 
-// data reported to main thread
-let testState = -1; // -1=not started, 0=starting, 1=download test, 2=ping+jitter test, 3=upload test, 4=finished, 5=abort
-let dlStatus = ""; // download speed in megabit/s with 2 decimal digits
-let ulStatus = ""; // upload speed in megabit/s with 2 decimal digits
-let pingStatus = ""; // ping in milliseconds with 2 decimal digits
-let jitterStatus = ""; // jitter in milliseconds with 2 decimal digits
-let clientIp = ""; // client's IP address as reported by getIP.php
-let dlProgress = 0; //progress of download test 0-1
-let ulProgress = 0; //progress of upload test 0-1
-let pingProgress = 0; //progress of ping+jitter test 0-1
-let testId = null; //test ID (sent back by telemetry if used, null otherwise)
+// 报告给主线程的数据
+let testState = -1; // -1=未开始, 0=正在开始, 1=下载测试, 2=ping+抖动测试, 3=上传测试, 4=已完成, 5=中止
+let dlStatus = ""; // 下载速度，单位为兆比特/秒，保留两位小数
+let ulStatus = ""; // 上传速度，单位为兆比特/秒，保留两位小数
+let pingStatus = ""; // ping值，单位为毫秒，保留两位小数
+let jitterStatus = ""; // 抖动值，单位为毫秒，保留两位小数
+let clientIp = ""; // 客户端IP地址，由getIP.php报告
+let dlProgress = 0; // 下载测试进度 0-1
+let ulProgress = 0; // 上传测试进度 0-1
+let pingProgress = 0; // ping+抖动测试进度 0-1
+let testId = null; // 测试ID（如果使用遥测，则由遥测返回，否则为null）
 
-let log = ""; //telemetry log
+let log = ""; // 遥测日志
 function tlog(s) {
 	if (settings.telemetry_level >= 2) {
 		log += Date.now() + ": " + s + "\n";
@@ -30,72 +30,67 @@ function tverb(s) {
 }
 function twarn(s) {
 	if (settings.telemetry_level >= 2) {
-		log += Date.now() + " WARN: " + s + "\n";
+		log += Date.now() + " 警告: " + s + "\n";
 	}
 	console.warn(s);
 }
 
-// test settings. can be overridden by sending specific values with the start command
+// 测试设置。可以通过在开始命令中发送特定值来覆盖
 let settings = {
-	mpot: false, //set to true when in MPOT mode
-	test_order: "IP_D_U", //order in which tests will be performed as a string. D=Download, U=Upload, P=Ping+Jitter, I=IP, _=1 second delay
-	time_ul_max: 15, // max duration of upload test in seconds
-	time_dl_max: 15, // max duration of download test in seconds
-	time_auto: true, // if set to true, tests will take less time on faster connections
-	time_ulGraceTime: 3, //time to wait in seconds before actually measuring ul speed (wait for buffers to fill)
-	time_dlGraceTime: 1.5, //time to wait in seconds before actually measuring dl speed (wait for TCP window to increase)
-	count_ping: 10, // number of pings to perform in ping test
-	//url_dl: "backend/garbage.php", // path to a large file or garbage.php, used for download test. must be relative to this js file
-	url_dl: "backend/garbage",
-	//url_ul: "backend/empty.php", // path to an empty file, used for upload test. must be relative to this js file
-	url_ul: "backend/empty",
-	//url_ping: "backend/empty.php", // path to an empty file, used for ping test. must be relative to this js file
-	url_ping: "backend/empty",
-	//url_getIp: "backend/getIP.php", // path to getIP.php relative to this js file, or a similar thing that outputs the client's ip
-	url_getIp: "backend/getIP",
-	getIp_ispInfo: true, //if set to true, the server will include ISP info with the IP address
-	getIp_ispInfo_distance: "km", //km or mi=estimate distance from server in km/mi; set to false to disable distance estimation. getIp_ispInfo must be enabled in order for this to work
-	xhr_dlMultistream: 6, // number of download streams to use (can be different if enable_quirks is active)
-	xhr_ulMultistream: 3, // number of upload streams to use (can be different if enable_quirks is active)
-	xhr_multistreamDelay: 300, //how much concurrent requests should be delayed
-	xhr_ignoreErrors: 1, // 0=fail on errors, 1=attempt to restart a stream if it fails, 2=ignore all errors
-	xhr_dlUseBlob: false, // if set to true, it reduces ram usage but uses the hard drive (useful with large garbagePhp_chunkSize and/or high xhr_dlMultistream)
-	xhr_ul_blob_megabytes: 20, //size in megabytes of the upload blobs sent in the upload test (forced to 4 on chrome mobile)
-	garbagePhp_chunkSize: 100, // size of chunks sent by garbage.php (can be different if enable_quirks is active)
-	enable_quirks: true, // enable quirks for specific browsers. currently it overrides settings to optimize for specific browsers, unless they are already being overridden with the start command
-	ping_allowPerformanceApi: true, // if enabled, the ping test will attempt to calculate the ping more precisely using the Performance API. Currently works perfectly in Chrome, badly in Edge, and not at all in Firefox. If Performance API is not supported or the result is obviously wrong, a fallback is provided.
-	overheadCompensationFactor: 1.06, //can be changed to compensate for transport overhead. (see doc.md for some other values)
-	useMebibits: false, //if set to true, speed will be reported in mebibits/s instead of megabits/s
-	telemetry_level: 0, // 0=disabled, 1=basic (results only), 2=full (results and timing) 3=debug (results+log)
-	//url_telemetry: "results/telemetry.php", // path to the script that adds telemetry data to the database
-	url_telemetry: "results/telemetry",
-	telemetry_extra: "", //extra data that can be passed to the telemetry through the settings
-	forceIE11Workaround: false //when set to true, it will force the IE11 upload test on all browsers. Debug only
+	mpot: false, // 设置为true时处于MPOT模式
+	test_order: "IP_D_U", // 执行测试的顺序，以字符串形式。D=下载, U=上传, P=Ping+抖动, I=IP, _=1秒延迟
+	time_ul_max: 15, // 上传测试的最大持续时间（秒）
+	time_dl_max: 15, // 下载测试的最大持续时间（秒）
+	time_auto: true, // 如果设置为true，在更快的连接上测试会花费更少的时间
+	time_ulGraceTime: 3, // 在实际测量上传速度之前等待的时间（秒）（等待缓冲区填满）
+	time_dlGraceTime: 1.5, // 在实际测量下载速度之前等待的时间（秒）（等待TCP窗口增加）
+	count_ping: 10, // 在ping测试中执行的ping次数
+	url_dl: "backend/garbage", // 用于下载测试的大文件或garbage.php的路径
+	url_ul: "backend/empty", // 用于上传测试的空文件的路径
+	url_ping: "backend/empty", // 用于ping测试的空文件的路径
+	url_getIp: "backend/getIP", // getIP.php的路径或类似的输出客户端IP的文件
+	getIp_ispInfo: true, // 如果设置为true，服务器将包含ISP信息和IP地址
+	getIp_ispInfo_distance: "km", // km或mi=估计与服务器的距离（公里/英里）；设置为false以禁用距离估计。必须启用getIp_ispInfo才能使用此功能
+	xhr_dlMultistream: 6, // 要使用的下载流数量（如果enable_quirks处于活动状态，可能会不同）
+	xhr_ulMultistream: 3, // 要使用的上传流数量（如果enable_quirks处于活动状态，可能会不同）
+	xhr_multistreamDelay: 300, // 并发请求应该延迟多少
+	xhr_ignoreErrors: 1, // 0=失败时中止, 1=尝试重新启动失败的流, 2=忽略所有错误
+	xhr_dlUseBlob: false, // 如果设置为true，它会减少RAM使用量，但会使用硬盘（在大型garbagePhp_chunkSize和/或高xhr_dlMultistream时有用）
+	xhr_ul_blob_megabytes: 20, // 上传测试中发送的上传blob的大小（MB）（在chrome移动版上强制为4）
+	garbagePhp_chunkSize: 100, // garbage.php发送的块大小（如果enable_quirks处于活动状态，可能会不同）
+	enable_quirks: true, // 为特定浏览器启用quirks。目前它会覆盖设置以优化特定浏览器，除非它们已经被start命令覆盖
+	ping_allowPerformanceApi: true, // 如果启用，ping测试将尝试使用Performance API更精确地计算ping。目前在Chrome中完美工作，在Edge中效果不佳，在Firefox中完全不工作。如果不支持Performance API或结果明显错误，将提供一个后备方案。
+	overheadCompensationFactor: 1.06, // 可以更改以补偿传输开销。（参见doc.md了解其他一些值）
+	useMebibits: false, // 如果设置为true，速度将以mebibits/s而不是megabits/s为单位报告
+	telemetry_level: 0, // 0=禁用, 1=基本 (仅结果), 2=完整 (结果和时间) 3=调试 (结果+日志)
+	url_telemetry: "results/telemetry", // 将遥测数据添加到数据库的脚本的路径
+	telemetry_extra: "", // 可以通过设置传递给遥测的额外数据
+	forceIE11Workaround: false // 当设置为true时，它将在所有浏览器上强制使用IE11上传测试。仅用于调试
 };
 
-let xhr = null; // array of currently active xhr requests
-let interval = null; // timer used in tests
-let test_pointer = 0; //pointer to the next test to run inside settings.test_order
+let xhr = null; // 当前活动的xhr请求数组
+let interval = null; // 测试中使用的定时器
+let test_pointer = 0; // 指向settings.test_order中下一个要运行的测试的指针
 
 /*
-  this function is used on URLs passed in the settings to determine whether we need a ? or an & as a separator
+  这个函数用于在设置中传递的URL上确定我们是否需要使用?还是&作为分隔符
 */
 function url_sep(url) {
 	return url.match(/\?/) ? "&" : "?";
 }
 
 /*
-	listener for commands from main thread to this worker.
-	commands:
-	-status: returns the current status as a JSON string containing testState, dlStatus, ulStatus, pingStatus, clientIp, jitterStatus, dlProgress, ulProgress, pingProgress
-	-abort: aborts the current test
-	-start: starts the test. optionally, settings can be passed as JSON.
-		example: start {"time_ul_max":"10", "time_dl_max":"10", "count_ping":"50"}
+	来自主线程到此worker的命令的监听器。
+	命令：
+	-status: 以JSON字符串的形式返回当前状态，包含testState, dlStatus, ulStatus, pingStatus, clientIp, jitterStatus, dlProgress, ulProgress, pingProgress
+	-abort: 中止当前测试
+	-start: 开始测试。可以选择以JSON形式传递设置。
+		例如：start {"time_ul_max":"10", "time_dl_max":"10", "count_ping":"50"}
 */
 this.addEventListener("message", function (e) {
 	const params = e.data.split(" ");
 	if (params[0] === "status") {
-		// return status
+		// 返回状态
 		postMessage(
 			JSON.stringify({
 				testState: testState,
@@ -112,69 +107,69 @@ this.addEventListener("message", function (e) {
 		);
 	}
 	if (params[0] === "start" && testState === -1) {
-		// start new test
+		// 开始新测试
 		testState = 0;
 		try {
-			// parse settings, if present
+			// 解析设置（如果存在）
 			let s = {};
 			try {
 				const ss = e.data.substring(5);
 				if (ss) s = JSON.parse(ss);
 			} catch (e) {
-				twarn("Error parsing custom settings JSON. Please check your syntax");
+				twarn("解析自定义设置JSON时出错。请检查您的语法");
 			}
-			//copy custom settings
+			// 复制自定义设置
 			for (let key in s) {
 				if (typeof settings[key] !== "undefined") settings[key] = s[key];
-				else twarn("Unknown setting ignored: " + key);
+				else twarn("忽略未知设置: " + key);
 			}
 			const ua = navigator.userAgent;
-			// quirks for specific browsers. apply only if not overridden. more may be added in future releases
+			// 特定浏览器的quirks。仅在未被覆盖时应用。未来的版本可能会添加更多
 			if (settings.enable_quirks || (typeof s.enable_quirks !== "undefined" && s.enable_quirks)) {
 				if (/Firefox.(\d+\.\d+)/i.test(ua)) {
 					if (typeof s.ping_allowPerformanceApi === "undefined") {
-						// ff performance API sucks
+						// ff性能API不佳
 						settings.ping_allowPerformanceApi = false;
 					}
 				}
 				if (/Edge.(\d+\.\d+)/i.test(ua)) {
 					if (typeof s.xhr_dlMultistream === "undefined") {
-						// edge more precise with 3 download streams
+						// edge使用3个下载流更精确
 						settings.xhr_dlMultistream = 3;
 					}
 				}
 				if (/Chrome.(\d+)/i.test(ua) && !!self.fetch) {
 					if (typeof s.xhr_dlMultistream === "undefined") {
-						// chrome more precise with 5 streams
+						// chrome使用5个流更精确
 						settings.xhr_dlMultistream = 5;
 					}
 				}
 			}
 			if (/Edge.(\d+\.\d+)/i.test(ua)) {
-				//Edge 15 introduced a bug that causes onprogress events to not get fired, we have to use the "small chunks" workaround that reduces accuracy
+				//Edge 15引入了一个bug，导致onprogress事件不被触发，我们必须使用"小块"解决方案，这会降低精度
 				settings.forceIE11Workaround = true;
 			}
 			if (/PlayStation 4.(\d+\.\d+)/i.test(ua)) {
-				//PS4 browser has the same bug as IE11/Edge
+				//PS4浏览器有与IE11/Edge相同的bug
 				settings.forceIE11Workaround = true;
 			}
 			if (/Chrome.(\d+)/i.test(ua) && /Android|iPhone|iPad|iPod|Windows Phone/i.test(ua)) {
-				//cheap af
-				//Chrome mobile introduced a limitation somewhere around version 65, we have to limit XHR upload size to 4 megabytes
+				//便宜的解决方案
+				//Chrome移动版在65版本左右引入了一个限制，我们必须将XHR上传大小限制为4兆字节
 				settings.xhr_ul_blob_megabytes = 4;
 			}
 			if (/^((?!chrome|android|crios|fxios).)*safari/i.test(ua)) {
-				//Safari also needs the IE11 workaround but only for the MPOT version
+				//Safari也需要IE11解决方案，但仅适用于MPOT版本
 				settings.forceIE11Workaround = true;
 			}
-			//telemetry_level has to be parsed and not just copied
-			if (typeof s.telemetry_level !== "undefined") settings.telemetry_level = s.telemetry_level === "basic" ? 1 : s.telemetry_level === "full" ? 2 : s.telemetry_level === "debug" ? 3 : 0; // telemetry level
-			//transform test_order to uppercase, just in case
+			//telemetry_level需要解析而不是直接复制
+			if (typeof s.telemetry_level !== "undefined") settings.telemetry_level = s.telemetry_level === "basic" ? 1 : s.telemetry_level === "full" ? 2 : s.telemetry_level === "debug" ? 3 : 0; // 遥测级别
+			//将test_order转换为大写，以防万一
 			settings.test_order = settings.test_order.toUpperCase();
 		} catch (e) {
-			twarn("Possible error in custom test settings. Some settings might not have been applied. Exception: " + e);
+			twarn("自定义测试设置中可能存在错误。某些设置可能未被应用。异常: " + e);
 		}
-		// run the tests
+		// 运行测试
 		tverb(JSON.stringify(settings));
 		test_pointer = 0;
 		let iRun = false,
@@ -184,7 +179,7 @@ this.addEventListener("message", function (e) {
 		const runNextTest = function () {
 			if (testState == 5) return;
 			if (test_pointer >= settings.test_order.length) {
-				//test is finished
+				//测试完成
 				if (settings.telemetry_level > 0)
 					sendTelemetry(function (id) {
 						testState = 4;
@@ -250,14 +245,14 @@ this.addEventListener("message", function (e) {
 		runNextTest();
 	}
 	if (params[0] === "abort") {
-		// abort command
+		// 中止命令
 		if (testState >= 4) return;
-		tlog("manually aborted");
-		clearRequests(); // stop all xhr activity
+		tlog("手动中止");
+		clearRequests(); // 停止所有xhr活动
 		runNextTest = null;
-		if (interval) clearInterval(interval); // clear timer if present
+		if (interval) clearInterval(interval); // 如果存在，清除定时器
 		if (settings.telemetry_level > 1) sendTelemetry(function () { });
-		testState = 5; //set test as aborted
+		testState = 5; // 将测试设置为中止状态
 		dlStatus = "";
 		ulStatus = "";
 		pingStatus = "";
@@ -268,9 +263,10 @@ this.addEventListener("message", function (e) {
 		pingProgress = 0;
 	}
 });
-// stops all XHR activity, aggressively
+
+// 积极停止所有XHR活动
 function clearRequests() {
-	tverb("stopping pending XHRs");
+	tverb("停止待处理的XHR");
 	if (xhr) {
 		for (let i = 0; i < xhr.length; i++) {
 			try {
@@ -293,17 +289,18 @@ function clearRequests() {
 		xhr = null;
 	}
 }
-// gets client's IP using url_getIp, then calls the done function
-let ipCalled = false; // used to prevent multiple accidental calls to getIp
-let ispInfo = ""; //used for telemetry
+
+// 使用url_getIp获取客户端的IP，然后调用done函数
+let ipCalled = false; // 用于防止多次意外调用getIp
+let ispInfo = ""; // 用于遥测
 function getIp(done) {
 	tverb("getIp");
 	if (ipCalled) return;
-	else ipCalled = true; // getIp already called?
+	else ipCalled = true; // getIp是否已被调用？
 	let startT = new Date().getTime();
 	xhr = new XMLHttpRequest();
 	xhr.onload = function () {
-		tlog("IP: " + xhr.responseText + ", took " + (new Date().getTime() - startT) + "ms");
+		tlog("IP: " + xhr.responseText + "，耗时 " + (new Date().getTime() - startT) + "ms");
 		try {
 			const data = JSON.parse(xhr.responseText);
 			clientIp = data.processedString;
@@ -315,90 +312,92 @@ function getIp(done) {
 		done();
 	};
 	xhr.onerror = function () {
-		tlog("getIp failed, took " + (new Date().getTime() - startT) + "ms");
+		tlog("getIp失败，耗时 " + (new Date().getTime() - startT) + "ms");
 		done();
 	};
 	xhr.open("GET", settings.url_getIp + url_sep(settings.url_getIp) + (settings.mpot ? "cors=true&" : "") + (settings.getIp_ispInfo ? "isp=true" + (settings.getIp_ispInfo_distance ? "&distance=" + settings.getIp_ispInfo_distance + "&" : "&") : "&") + "r=" + Math.random(), true);
 	xhr.send();
 }
-// download test, calls done function when it's over
-let dlCalled = false; // used to prevent multiple accidental calls to dlTest
+
+// 下载测试，完成时调用done函数
+let dlCalled = false; // 用于防止多次意外调用dlTest
 function dlTest(done) {
 	tverb("dlTest");
 	if (dlCalled) return;
-	else dlCalled = true; // dlTest already called?
-	let totLoaded = 0.0, // total number of loaded bytes
-		startT = new Date().getTime(), // timestamp when test was started
-		bonusT = 0, //how many milliseconds the test has been shortened by (higher on faster connections)
-		graceTimeDone = false, //set to true after the grace time is past
-		failed = false; // set to true if a stream fails
+	else dlCalled = true; // dlTest是否已被调用？
+	let totLoaded = 0.0, // 已加载字节的总数
+		startT = new Date().getTime(), // 测试开始的时间戳
+		bonusT = 0, // 测试缩短的毫秒数（在更快的连接上更高）
+		graceTimeDone = false, // 宽限时间过后设置为true
+		failed = false; // 如果流失败则设置为true
 	xhr = [];
-	// function to create a download stream. streams are slightly delayed so that they will not end at the same time
+	// 创建下载流的函数。流略微延迟，以便它们不会同时结束
 	const testStream = function (i, delay) {
 		setTimeout(
 			function () {
-				if (testState !== 1) return; // delayed stream ended up starting after the end of the download test
-				tverb("dl test stream started " + i + " " + delay);
-				let prevLoaded = 0; // number of bytes loaded last time onprogress was called
+				if (testState !== 1) return; // 延迟的流在下载测试结束后开始
+				tverb("dl测试流开始 " + i + " " + delay);
+				let prevLoaded = 0; // 上次调用onprogress时加载的字节数
 				let x = new XMLHttpRequest();
 				xhr[i] = x;
 				xhr[i].onprogress = function (event) {
-					tverb("dl stream progress event " + i + " " + event.loaded);
+					tverb("dl流进度事件 " + i + " " + event.loaded);
 					if (testState !== 1) {
 						try {
 							x.abort();
 						} catch (e) { }
-					} // just in case this XHR is still running after the download test
-					// progress event, add number of new loaded bytes to totLoaded
+					} // 以防这个XHR在下载测试后仍在运行
+					// 进度事件，将新加载的字节数添加到totLoaded
 					const loadDiff = event.loaded <= 0 ? 0 : event.loaded - prevLoaded;
-					if (isNaN(loadDiff) || !isFinite(loadDiff) || loadDiff < 0) return; // just in case
+					if (isNaN(loadDiff) || !isFinite(loadDiff) || loadDiff < 0) return; // 以防万一
 					totLoaded += loadDiff;
 					prevLoaded = event.loaded;
 				}.bind(this);
 				xhr[i].onload = function () {
-					// the large file has been loaded entirely, start again
-					tverb("dl stream finished " + i);
+					// 大文件已完全加载，重新开始
+					tverb("dl流完成 " + i);
 					try {
 						xhr[i].abort();
-					} catch (e) { } // reset the stream data to empty ram
+					} catch (e) { } // 重置流数据到空RAM
 					testStream(i, 0);
 				}.bind(this);
 				xhr[i].onerror = function () {
-					// error
-					tverb("dl stream failed " + i);
-					if (settings.xhr_ignoreErrors === 0) failed = true; //abort
+					// 错误
+					tverb("dl流失败 " + i);
+					if (settings.xhr_ignoreErrors === 0) failed = true; // 中止
 					try {
 						xhr[i].abort();
 					} catch (e) { }
 					delete xhr[i];
-					if (settings.xhr_ignoreErrors === 1) testStream(i, 0); //restart stream
+					if (settings.xhr_ignoreErrors === 1) testStream(i, 0); // 重启流
 				}.bind(this);
-				// send xhr
+				// 发送xhr
 				try {
 					if (settings.xhr_dlUseBlob) xhr[i].responseType = "blob";
 					else xhr[i].responseType = "arraybuffer";
 				} catch (e) { }
-				xhr[i].open("GET", settings.url_dl + url_sep(settings.url_dl) + (settings.mpot ? "cors=true&" : "") + "r=" + Math.random() + "&ckSize=" + settings.garbagePhp_chunkSize, true); // random string to prevent caching
+				xhr[i].open("GET", settings.url_dl + url_sep(settings.url_dl) + (settings.mpot ? "cors=true&" : "") + "r=" + Math.random() + "&ckSize=" + settings.garbagePhp_chunkSize, true); // 随机字符串防止缓存
 				xhr[i].send();
 			}.bind(this),
 			1 + delay
 		);
 	}.bind(this);
-	// open streams
+	// 开启流
+	console.log("开始下载测试，共" + settings.xhr_dlMultistream + "个流");
 	for (let i = 0; i < settings.xhr_dlMultistream; i++) {
 		testStream(i, settings.xhr_multistreamDelay * i);
 	}
-	// every 200ms, update dlStatus
+	// 每200ms更新dlStatus
 	interval = setInterval(
 		function () {
-			tverb("DL: " + dlStatus + (graceTimeDone ? "" : " (in grace time)"));
+			tverb("DL: " + dlStatus + (graceTimeDone ? "" : " (在宽限时间内)"));
 			const t = new Date().getTime() - startT;
 			if (graceTimeDone) dlProgress = (t + bonusT) / (settings.time_dl_max * 1000);
 			if (t < 200) return;
 			if (!graceTimeDone) {
 				if (t > 1000 * settings.time_dlGraceTime) {
 					if (totLoaded > 0) {
-						// if the connection is so slow that we didn't get a single chunk yet, do not reset
+						// 如果连接太慢以至于我们还没有得到一个块，就不要重置
 						startT = new Date().getTime();
 						bonusT = 0;
 						totLoaded = 0.0;
@@ -408,19 +407,19 @@ function dlTest(done) {
 			} else {
 				const speed = totLoaded / (t / 1000.0);
 				if (settings.time_auto) {
-					//decide how much to shorten the test. Every 200ms, the test is shortened by the bonusT calculated here
+					// 决定缩短测试多少。每200ms，测试缩短这里计算的bonusT
 					const bonus = (5.0 * speed) / 100000;
 					bonusT += bonus > 400 ? 400 : bonus;
 				}
-				//update status
-				dlStatus = ((speed * 8 * settings.overheadCompensationFactor) / (settings.useMebibits ? 1048576 : 1000000)).toFixed(2); // speed is multiplied by 8 to go from bytes to bits, overhead compensation is applied, then everything is divided by 1048576 or 1000000 to go to megabits/mebibits
+				// 更新状态
+				dlStatus = ((speed * 8 * settings.overheadCompensationFactor) / (settings.useMebibits ? 1048576 : 1000000)).toFixed(2); // 速度乘以8从字节转换为比特，应用开销补偿，然后除以1048576或1000000转换为兆比特/秒或兆字节/秒
 				if ((t + bonusT) / 1000.0 > settings.time_dl_max || failed) {
-					// test is over, stop streams and timer
-					if (failed || isNaN(dlStatus)) dlStatus = "Fail";
+					// 测试结束，停止流和定时器
+					if (failed || isNaN(dlStatus)) dlStatus = "失败";
 					clearRequests();
 					clearInterval(interval);
 					dlProgress = 1;
-					tlog("dlTest: " + dlStatus + ", took " + (new Date().getTime() - startT) + "ms");
+					tlog("dlTest: " + dlStatus + "，耗时 " + (new Date().getTime() - startT) + "ms");
 					done();
 				}
 			}
@@ -428,13 +427,14 @@ function dlTest(done) {
 		200
 	);
 }
-// upload test, calls done function when it's over
-let ulCalled = false; // used to prevent multiple accidental calls to ulTest
+
+// 上传测试，完成时调用done函数
+let ulCalled = false; // 用于防止多次意外调用ulTest
 function ulTest(done) {
 	tverb("ulTest");
 	if (ulCalled) return;
-	else ulCalled = true; // ulTest already called?
-	// garbage data for upload test
+	else ulCalled = true; // ulTest是否已被调用？
+	// 上传测试的垃圾数据
 	let r = new ArrayBuffer(1048576);
 	const maxInt = Math.pow(2, 32) - 1;
 	try {
@@ -453,19 +453,19 @@ function ulTest(done) {
 	reqsmall.push(r);
 	reqsmall = new Blob(reqsmall);
 	const testFunction = function () {
-		let totLoaded = 0.0, // total number of transmitted bytes
-			startT = new Date().getTime(), // timestamp when test was started
-			bonusT = 0, //how many milliseconds the test has been shortened by (higher on faster connections)
-			graceTimeDone = false, //set to true after the grace time is past
-			failed = false; // set to true if a stream fails
+		let totLoaded = 0.0, // 传输字节的总数
+			startT = new Date().getTime(), // 测试开始的时间戳
+			bonusT = 0, // 测试缩短的毫秒数（在更快的连接上更高）
+			graceTimeDone = false, // 宽限时间过后设置为true
+			failed = false; // 如果流失败则设置为true
 		xhr = [];
-		// function to create an upload stream. streams are slightly delayed so that they will not end at the same time
+		// 创建上传流的函数。流略微延迟，以便它们不会同时结束
 		const testStream = function (i, delay) {
 			setTimeout(
 				function () {
-					if (testState !== 3) return; // delayed stream ended up starting after the end of the upload test
-					tverb("ul test stream started " + i + " " + delay);
-					let prevLoaded = 0; // number of bytes transmitted last time onprogress was called
+					if (testState !== 3) return; // 延迟的流在上传测试结束后开始
+					tverb("ul测试流开始 " + i + " " + delay);
+					let prevLoaded = 0; // 上次调用onprogress时传输的字节数
 					let x = new XMLHttpRequest();
 					xhr[i] = x;
 					let ie11workaround;
@@ -479,74 +479,74 @@ function ulTest(done) {
 						}
 					}
 					if (ie11workaround) {
-						// IE11 workaround: xhr.upload does not work properly, therefore we send a bunch of small 256k requests and use the onload event as progress. This is not precise, especially on fast connections
+						// IE11解决方案：xhr.upload不能正常工作，因此我们发送一堆小的256k请求并使用onload事件作为进度。这不精确，特别是在快速连接上
 						xhr[i].onload = xhr[i].onerror = function () {
-							tverb("ul stream progress event (ie11wa)");
+							tverb("ul流进度事件 (ie11wa)");
 							totLoaded += reqsmall.size;
 							testStream(i, 0);
 						};
-						xhr[i].open("POST", settings.url_ul + url_sep(settings.url_ul) + (settings.mpot ? "cors=true&" : "") + "r=" + Math.random(), true); // random string to prevent caching
+						xhr[i].open("POST", settings.url_ul + url_sep(settings.url_ul) + (settings.mpot ? "cors=true&" : "") + "r=" + Math.random(), true); // 随机字符串防止缓存
 						try {
-							xhr[i].setRequestHeader("Content-Encoding", "identity"); // disable compression (some browsers may refuse it, but data is incompressible anyway)
+							xhr[i].setRequestHeader("Content-Encoding", "identity"); // 禁用压缩（某些浏览器可能会拒绝，但数据无论如何都是不可压缩的）
 						} catch (e) { }
-						//No Content-Type header in MPOT branch because it triggers bugs in some browsers
+						// MPOT分支中没有Content-Type头，因为它在某些浏览器中触发bug
 						xhr[i].send(reqsmall);
 					} else {
-						// REGULAR version, no workaround
+						// 常规版本，无需解决方案
 						xhr[i].upload.onprogress = function (event) {
-							tverb("ul stream progress event " + i + " " + event.loaded);
+							tverb("ul流进度事件 " + i + " " + event.loaded);
 							if (testState !== 3) {
 								try {
 									x.abort();
 								} catch (e) { }
-							} // just in case this XHR is still running after the upload test
-							// progress event, add number of new loaded bytes to totLoaded
+							} // 以防这个XHR在上传测试后仍在运行
+							// 进度事件，将新传输的字节数添加到totLoaded
 							const loadDiff = event.loaded <= 0 ? 0 : event.loaded - prevLoaded;
-							if (isNaN(loadDiff) || !isFinite(loadDiff) || loadDiff < 0) return; // just in case
+							if (isNaN(loadDiff) || !isFinite(loadDiff) || loadDiff < 0) return; // 以防万一
 							totLoaded += loadDiff;
 							prevLoaded = event.loaded;
 						}.bind(this);
 						xhr[i].upload.onload = function () {
-							// this stream sent all the garbage data, start again
-							tverb("ul stream finished " + i);
+							// 这个流发送了所有垃圾数据，重新开始
+							tverb("ul流完成 " + i);
 							testStream(i, 0);
 						}.bind(this);
 						xhr[i].upload.onerror = function () {
-							tverb("ul stream failed " + i);
-							if (settings.xhr_ignoreErrors === 0) failed = true; //abort
+							tverb("ul流失败 " + i);
+							if (settings.xhr_ignoreErrors === 0) failed = true; // 中止
 							try {
 								xhr[i].abort();
 							} catch (e) { }
 							delete xhr[i];
-							if (settings.xhr_ignoreErrors === 1) testStream(i, 0); //restart stream
+							if (settings.xhr_ignoreErrors === 1) testStream(i, 0); // 重启流
 						}.bind(this);
-						// send xhr
-						xhr[i].open("POST", settings.url_ul + url_sep(settings.url_ul) + (settings.mpot ? "cors=true&" : "") + "r=" + Math.random(), true); // random string to prevent caching
+						// 发送xhr
+						xhr[i].open("POST", settings.url_ul + url_sep(settings.url_ul) + (settings.mpot ? "cors=true&" : "") + "r=" + Math.random(), true); // 随机字符串防止缓存
 						try {
-							xhr[i].setRequestHeader("Content-Encoding", "identity"); // disable compression (some browsers may refuse it, but data is incompressible anyway)
+							xhr[i].setRequestHeader("Content-Encoding", "identity"); // 禁用压缩（某些浏览器可能会拒绝，但数据无论如何都是不可压缩的）
 						} catch (e) { }
-						//No Content-Type header in MPOT branch because it triggers bugs in some browsers
+						// MPOT分支中没有Content-Type头，因为它在某些浏览器中触发bug
 						xhr[i].send(req);
 					}
 				}.bind(this),
 				delay
 			);
 		}.bind(this);
-		// open streams
+		// 开启流
 		for (let i = 0; i < settings.xhr_ulMultistream; i++) {
 			testStream(i, settings.xhr_multistreamDelay * i);
 		}
-		// every 200ms, update ulStatus
+		// 每200ms更新ulStatus
 		interval = setInterval(
 			function () {
-				tverb("UL: " + ulStatus + (graceTimeDone ? "" : " (in grace time)"));
+				tverb("UL: " + ulStatus + (graceTimeDone ? "" : " (在宽限时间内)"));
 				const t = new Date().getTime() - startT;
 				if (graceTimeDone) ulProgress = (t + bonusT) / (settings.time_ul_max * 1000);
 				if (t < 200) return;
 				if (!graceTimeDone) {
 					if (t > 1000 * settings.time_ulGraceTime) {
 						if (totLoaded > 0) {
-							// if the connection is so slow that we didn't get a single chunk yet, do not reset
+							// 如果连接太慢以至于我们还没有发送一个块，就不要重置
 							startT = new Date().getTime();
 							bonusT = 0;
 							totLoaded = 0.0;
@@ -556,19 +556,19 @@ function ulTest(done) {
 				} else {
 					const speed = totLoaded / (t / 1000.0);
 					if (settings.time_auto) {
-						//decide how much to shorten the test. Every 200ms, the test is shortened by the bonusT calculated here
+						// 决定缩短测试多少。每200ms，测试缩短这里计算的bonusT
 						const bonus = (5.0 * speed) / 100000;
 						bonusT += bonus > 400 ? 400 : bonus;
 					}
-					//update status
-					ulStatus = ((speed * 8 * settings.overheadCompensationFactor) / (settings.useMebibits ? 1048576 : 1000000)).toFixed(2); // speed is multiplied by 8 to go from bytes to bits, overhead compensation is applied, then everything is divided by 1048576 or 1000000 to go to megabits/mebibits
+					// 更新状态
+					ulStatus = ((speed * 8 * settings.overheadCompensationFactor) / (settings.useMebibits ? 1048576 : 1000000)).toFixed(2); // 速度乘以8从字节转换为比特，应用开销补偿，然后除以1048576或1000000转换为兆比特/秒或兆字节/秒
 					if ((t + bonusT) / 1000.0 > settings.time_ul_max || failed) {
-						// test is over, stop streams and timer
-						if (failed || isNaN(ulStatus)) ulStatus = "Fail";
+						// 测试结束，停止流和定时器
+						if (failed || isNaN(ulStatus)) ulStatus = "失败";
 						clearRequests();
 						clearInterval(interval);
 						ulProgress = 1;
-						tlog("ulTest: " + ulStatus + ", took " + (new Date().getTime() - startT) + "ms");
+						tlog("ulTest: " + ulStatus + "，耗时 " + (new Date().getTime() - startT) + "ms");
 						done();
 					}
 				}
@@ -577,31 +577,32 @@ function ulTest(done) {
 		);
 	}.bind(this);
 	if (settings.mpot) {
-		tverb("Sending POST request before performing upload test");
+		tverb("在执行上传测试之前发送POST请求");
 		xhr = [];
 		xhr[0] = new XMLHttpRequest();
 		xhr[0].onload = xhr[0].onerror = function () {
-			tverb("POST request sent, starting upload test");
+			tverb("POST请求已发送，开始上传测试");
 			testFunction();
 		}.bind(this);
 		xhr[0].open("POST", settings.url_ul);
 		xhr[0].send();
 	} else testFunction();
 }
-// ping+jitter test, function done is called when it's over
-let ptCalled = false; // used to prevent multiple accidental calls to pingTest
+
+// ping+抖动测试，完成时调用done函数
+let ptCalled = false; // 用于防止多次意外调用pingTest
 function pingTest(done) {
 	tverb("pingTest");
 	if (ptCalled) return;
-	else ptCalled = true; // pingTest already called?
-	const startT = new Date().getTime(); //when the test was started
-	let prevT = null; // last time a pong was received
-	let ping = 0.0; // current ping value
-	let jitter = 0.0; // current jitter value
-	let i = 0; // counter of pongs received
-	let prevInstspd = 0; // last ping time, used for jitter calculation
+	else ptCalled = true; // pingTest是否已被调用？
+	const startT = new Date().getTime(); // 测试开始的时间
+	let prevT = null; // 上次收到pong的时间
+	let ping = 0.0; // 当前ping值
+	let jitter = 0.0; // 当前抖动值
+	let i = 0; // 收到的pong计数器
+	let prevInstspd = 0; // 上次ping时间，用于计算抖动
 	xhr = [];
-	// ping function
+	// ping函数
 	const doPing = function () {
 		tverb("ping");
 		pingProgress = i / settings.count_ping;
@@ -611,79 +612,80 @@ function pingTest(done) {
 			// pong
 			tverb("pong");
 			if (i === 0) {
-				prevT = new Date().getTime(); // first pong
+				prevT = new Date().getTime(); // 第一个pong
 			} else {
 				let instspd = new Date().getTime() - prevT;
 				if (settings.ping_allowPerformanceApi) {
 					try {
-						//try to get accurate performance timing using performance api
+						// 尝试使用performance api获取准确的性能计时
 						let p = performance.getEntries();
 						p = p[p.length - 1];
 						let d = p.responseStart - p.requestStart;
 						if (d <= 0) d = p.duration;
 						if (d > 0 && d < instspd) instspd = d;
 					} catch (e) {
-						//if not possible, keep the estimate
-						tverb("Performance API not supported, using estimate");
+						// 如果不可能，保持估计值
+						tverb("不支持Performance API，使用估计值");
 					}
 				}
-				//noticed that some browsers randomly have 0ms ping
+				// 注意到一些浏览器随机有0ms ping
 				if (instspd < 1) instspd = prevInstspd;
 				if (instspd < 1) instspd = 1;
 				const instjitter = Math.abs(instspd - prevInstspd);
 				if (i === 1) ping = instspd;
-				/* first ping, can't tell jitter yet*/ else {
-					if (instspd < ping) ping = instspd; // update ping, if the instant ping is lower
+				/* 第一个ping，还不能判断抖动 */ else {
+					if (instspd < ping) ping = instspd; // 如果瞬时ping更低，更新ping
 					if (i === 2) jitter = instjitter;
-					//discard the first jitter measurement because it might be much higher than it should be
-					else jitter = instjitter > jitter ? jitter * 0.3 + instjitter * 0.7 : jitter * 0.8 + instjitter * 0.2; // update jitter, weighted average. spikes in ping values are given more weight.
+					// 丢弃第一个抖动测量，因为它可能比应有的高得多
+					else jitter = instjitter > jitter ? jitter * 0.3 + instjitter * 0.7 : jitter * 0.8 + instjitter * 0.2; // 更新抖动，加权平均。ping值的峰值被赋予更多权重。
 				}
 				prevInstspd = instspd;
 			}
 			pingStatus = ping.toFixed(2);
 			jitterStatus = jitter.toFixed(2);
 			i++;
-			tverb("ping: " + pingStatus + " jitter: " + jitterStatus);
+			tverb("ping: " + pingStatus + " 抖动: " + jitterStatus);
 			if (i < settings.count_ping) doPing();
 			else {
-				// more pings to do?
+				// 还有更多ping要做吗？
 				pingProgress = 1;
-				tlog("ping: " + pingStatus + " jitter: " + jitterStatus + ", took " + (new Date().getTime() - startT) + "ms");
+				tlog("ping: " + pingStatus + " 抖动: " + jitterStatus + "，耗时 " + (new Date().getTime() - startT) + "ms");
 				done();
 			}
 		}.bind(this);
 		xhr[0].onerror = function () {
-			// a ping failed, cancel test
-			tverb("ping failed");
+			// ping失败，取消测试
+			tverb("ping失败");
 			if (settings.xhr_ignoreErrors === 0) {
-				//abort
-				pingStatus = "Fail";
-				jitterStatus = "Fail";
+				// 中止
+				pingStatus = "失败";
+				jitterStatus = "失败";
 				clearRequests();
-				tlog("ping test failed, took " + (new Date().getTime() - startT) + "ms");
+				tlog("ping测试失败，耗时 " + (new Date().getTime() - startT) + "ms");
 				pingProgress = 1;
 				done();
 			}
-			if (settings.xhr_ignoreErrors === 1) doPing(); //retry ping
+			if (settings.xhr_ignoreErrors === 1) doPing(); // 重试ping
 			if (settings.xhr_ignoreErrors === 2) {
-				//ignore failed ping
+				// 忽略失败的ping
 				i++;
 				if (i < settings.count_ping) doPing();
 				else {
-					// more pings to do?
+					// 还有更多ping要做吗？
 					pingProgress = 1;
-					tlog("ping: " + pingStatus + " jitter: " + jitterStatus + ", took " + (new Date().getTime() - startT) + "ms");
+					tlog("ping: " + pingStatus + " 抖动: " + jitterStatus + "，耗时 " + (new Date().getTime() - startT) + "ms");
 					done();
 				}
 			}
 		}.bind(this);
-		// send xhr
-		xhr[0].open("GET", settings.url_ping + url_sep(settings.url_ping) + (settings.mpot ? "cors=true&" : "") + "r=" + Math.random(), true); // random string to prevent caching
+		// 发送xhr
+		xhr[0].open("GET", settings.url_ping + url_sep(settings.url_ping) + (settings.mpot ? "cors=true&" : "") + "r=" + Math.random(), true); // 随机字符串防止缓存
 		xhr[0].send();
 	}.bind(this);
-	doPing(); // start first ping
+	doPing(); // 开始第一个ping
 }
-// telemetry
+
+// 遥测
 function sendTelemetry(done) {
 	if (settings.telemetry_level < 1) return;
 	xhr = new XMLHttpRequest();
@@ -703,7 +705,7 @@ function sendTelemetry(done) {
 		}
 	};
 	xhr.onerror = function () {
-		console.log("TELEMETRY ERROR " + xhr.status);
+		console.log("遥测错误 " + xhr.status);
 		done(null);
 	};
 	xhr.open("POST", settings.url_telemetry + url_sep(settings.url_telemetry) + (settings.mpot ? "cors=true&" : "") + "r=" + Math.random(), true);
