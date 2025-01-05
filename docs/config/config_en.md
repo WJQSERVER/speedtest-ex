@@ -25,4 +25,7 @@ path = "/data/speedtest-ex/db/speedtest.db" # Path to the database file
 
 [frontend]
 chartlist = 100 # Default to display the most recent 100 entries
+
+[revping]
+enable = true # Enable reverse ping test
 ``` 
