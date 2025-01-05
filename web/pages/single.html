@@ -6,201 +6,9 @@
     <meta charset="UTF-8" />
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <title>SpeedTest-EX</title>
-    <style>
-        body,
-        html {
-            margin: 0;
-            padding: 0;
-            font-family: sans-serif;
-            background-color: #e8eaed;
-            /* 更现代的浅灰背景 */
-            color: #333;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 2.5% auto;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.9);
-            /* 半透明白色背景 */
-            border-radius: 20px;
-            /* 圆角 */
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-            /* 柔和阴影 */
-        }
-
-        h1 {
-            text-align: center;
-            color: #075199;
-            margin-bottom: 30px;
-            font-size: 28px;
-        }
-
-        #startStopBtn {
-            display: block;
-            width: 200px;
-            height: 50px;
-            margin: 0 auto 30px;
-            background-color: #0050a5;
-            color: white;
-            border: none;
-            border-radius: 25px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            /* 按钮阴影 */
-        }
-
-        #startStopBtn:hover {
-            background-color: #8caec6;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-            /* 按钮悬停阴影 */
-        }
-
-        #startStopBtn.running {
-            background-color: #ff4d4f;
-        }
-
-        #startStopBtn.running:hover {
-            background-color: #ff7875;
-        }
-
-        .test-area {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            margin-bottom: 30px;
-            gap: 20px;
-            /* 增加间距 */
-        }
-
-        .test-box {
-            background-color: rgba(255, 255, 255, 0.8);
-            /* 半透明效果 */
-            border-radius: 15px;
-            /* 圆角 */
-            padding: 20px;
-            margin: 10px;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            /* 柔和阴影 */
-            flex: 1 1 200px;
-            max-width: 220px;
-            /* 限制宽度 */
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            /* 添加交互动画 */
-        }
-
-        .test-box:hover {
-            transform: translateY(-5px);
-            /* 悬浮效果 */
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        }
-
-        .test-name {
-            font-size: 18px;
-            margin-bottom: 10px;
-            color: #075199;
-            font-weight: bold;
-        }
-
-        .meter-text {
-            font-size: 28px;
-            font-weight: bold;
-            margin: 10px 0;
-            color: #333;
-        }
-
-        .unit {
-            font-size: 14px;
-            color: #888;
-        }
-
-        #ipArea {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 14px;
-            color: #888;
-        }
-
-        #privacyPolicy {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            overflow-y: auto;
-        }
-
-        .privacy-content {
-            background-color: white;
-            margin: 50px auto;
-            padding: 20px;
-            max-width: 600px;
-            border-radius: 20px;
-            /* 圆角 */
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            /* 阴影 */
-        }
-
-        .privacy-link {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .privacy-link a {
-            color: #1890ff;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .privacy-link a:hover {
-            text-decoration: underline;
-        }
-
-        #jumpButton {
-            display: inline-block;
-            padding: 5px 10px;
-            /* 减小内边距 */
-            font-size: 14px;
-            /* 调整字体大小 */
-            color: white;
-            background-color: #0050a5;
-            border: none;
-            border-radius: 15px;
-            /* 圆角 */
-            text-decoration: none;
-            text-align: center;
-            transition: background-color 0.3s, transform 0.3s;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        #jumpButton:hover {
-            background-color: #007bff;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        button {
-            font-family: sans-serif;
-        }
-
-        footer {
-            line-height: 1.25;
-            text-align: center;
-            font-size: 1rem;
-            padding: 10px 0;
-            /* 添加一些内边距 */
-
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
     <script type="text/javascript" src="speedtest.js"></script>
-</head>
+    <script type="text/javascript" src="script.js"></script>
 
 <body>
     <div class="container">
@@ -232,8 +40,8 @@
             <span id="ip"></span>
         </div>
         <div style="text-align: center; margin-top: 20px;">
-            <a href="/" id="jumpButton">多下载流</a>
-            <a href="/chart.html" id="jumpButton">查看图表</a>
+            <a href="/" id="jump-button">多下载流</a>
+            <a href="/chart.html" id="jump-button">查看图表</a>
             <!-- <a href="/chart.html" style="font-size: 14px; color: #075199; text-decoration: none;">查看图表</a> -->
             <div>反向ICMP Ping: <span id="pingValue">-</span> ms</div>
         </div>
@@ -243,73 +51,9 @@
     <script>
         function I(i) { return document.getElementById(i); }
         var s = new Speedtest();
-        //s.setParameter("telemetry_level", "basic");
+        I("startStopBtn").onclick = startStop;
         s.setParameter("xhr_dlMultistream", 1);
         s.setParameter("xhr_ulMultistream", 1);
-
-        function startStop() {
-            if (s.getState() == 3) {
-                s.abort();
-                I("startStopBtn").className = "";
-                I("startStopBtn").textContent = "开始";
-                initUI();
-            } else {
-                I("startStopBtn").className = "running";
-                I("startStopBtn").textContent = "停止";
-                s.onupdate = function (data) {
-                    I("ip").textContent = data.clientIp;
-                    I("dlText").textContent = (data.testState == 1 && data.dlStatus == 0) ? "..." : data.dlStatus;
-                    I("ulText").textContent = (data.testState == 3 && data.ulStatus == 0) ? "..." : data.ulStatus;
-                    I("pingText").textContent = data.pingStatus;
-                    I("jitText").textContent = data.jitterStatus;
-                };
-                s.onend = function (aborted) {
-                    I("startStopBtn").className = "";
-                    I("startStopBtn").textContent = "开始";
-                };
-                s.start();
-            }
-        }
-
-        function initUI() {
-            I("dlText").textContent = "";
-            I("ulText").textContent = "";
-            I("pingText").textContent = "";
-            I("jitText").textContent = "";
-            I("ip").textContent = "";
-            I("startStopBtn").textContent = "开始";
-        }
-
-        I("startStopBtn").onclick = startStop;
-
-        setTimeout(function () { initUI(); }, 100);
-
-        let intervalId;
-
-        async function icmpping() {
-            const response = await fetch(`/revping`);
-            const data = await response.json();
-            const resultDiv = document.getElementById('result');
-            const pingValueDiv = document.getElementById('pingValue');
-
-            if (data.success) {
-                /* icmpresultDiv.innerHTML = `
-                     <p> ${data.rtt.toFixed(3)} ms</p>
-                 `; */
-                pingValueDiv.textContent = data.rtt.toFixed(3); // 更新当前 Ping 值
-            } else {
-                /* icmpresultDiv.innerHTML = `<p style="color: red;">错误: ${data.error}</p>`; */
-                pingValueDiv.textContent = '-'; // 重置 Ping 值
-            }
-        }
-
-        function startIcmpPing() {
-            icmpping(); // 立即请求一次
-            intervalId = setInterval(icmpping, 2500); // 每隔2.5秒请求一次
-        }
-
-        // 网页加载时开始请求
-        window.onload = startIcmpPing;
 
     </script>
 </body>
