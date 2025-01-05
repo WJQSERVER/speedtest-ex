@@ -59,7 +59,7 @@ func ListenAndServe(cfg *config.Config) error {
 	})
 	// 反向ping
 	router.GET(backendUrl+"/revping", func(c *gin.Context) {
-		pingIP(c)
+		pingIP(c, cfg)
 	})
 
 	basePath := cfg.Server.BasePath
@@ -81,7 +81,7 @@ func ListenAndServe(cfg *config.Config) error {
 	})
 	// 反向ping
 	router.GET(basePath+"/revping", func(c *gin.Context) {
-		pingIP(c)
+		pingIP(c, cfg)
 	})
 
 	// PHP 前端默认值兼容性

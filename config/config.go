@@ -10,6 +10,7 @@ type Config struct {
 	IPinfo   IPinfoConfig
 	Database DatabaseConfig
 	Frontend FrontendConfig
+	RevPing  RevPingConfig
 }
 
 /*
@@ -62,6 +63,14 @@ chartlist = 100 # 默认显示最近100条数据
 */
 type FrontendConfig struct {
 	Chartlist int `toml:"chartlist"`
+}
+
+/*
+[revping]
+enable = true # 是否开启反向延迟测试
+*/
+type RevPingConfig struct {
+	Enable bool `toml:"enable"`
 }
 
 // LoadConfig 从 TOML 配置文件加载配置
