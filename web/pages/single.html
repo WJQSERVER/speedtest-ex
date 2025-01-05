@@ -232,7 +232,7 @@
             <span id="ip"></span>
         </div>
         <div style="text-align: center; margin-top: 20px;">
-            <a href="/single" id="jumpButton">单下载流</a>
+            <a href="/" id="jumpButton">多下载流</a>
             <a href="/chart.html" id="jumpButton">查看图表</a>
             <!-- <a href="/chart.html" style="font-size: 14px; color: #075199; text-decoration: none;">查看图表</a> -->
             <div>反向ICMP Ping: <span id="pingValue">-</span> ms</div>
@@ -243,6 +243,9 @@
     <script>
         function I(i) { return document.getElementById(i); }
         var s = new Speedtest();
+        //s.setParameter("telemetry_level", "basic");
+        s.setParameter("xhr_dlMultistream", 1);
+        s.setParameter("xhr_ulMultistream", 1);
 
         function startStop() {
             if (s.getState() == 3) {

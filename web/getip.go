@@ -26,7 +26,8 @@ var (
 
 func getIP(c *gin.Context, cfg *config.Config) {
 	clientIP := c.ClientIP() // 获取客户端 IP 地址
-	var ret results.Result   // 创建结果结构体实例
+	// clientIP := "1.1.1.1"  // for debug
+	var ret results.Result // 创建结果结构体实例
 	ret = ipinfo.GetIP(clientIP, cfg)
 	c.JSON(200, ret) // 返回 JSON 响应
 }

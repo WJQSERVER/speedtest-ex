@@ -56,6 +56,10 @@ func ListenAndServe(cfg *config.Config) error {
 	router.GET(backendUrl+"/api/chart-data", func(c *gin.Context) {
 		GetChartData(database.DB, cfg, c)
 	})
+	// 反向ping
+	router.GET(backendUrl+"/revping", func(c *gin.Context) {
+		pingIP(c)
+	})
 
 	basePath := cfg.Server.BasePath
 	// 记录遥测数据
@@ -73,6 +77,10 @@ func ListenAndServe(cfg *config.Config) error {
 	// 获取图表数据
 	router.GET(basePath+"/api/chart-data", func(c *gin.Context) {
 		GetChartData(database.DB, cfg, c)
+	})
+	// 反向ping
+	router.GET(basePath+"/revping", func(c *gin.Context) {
+		pingIP(c)
 	})
 
 	// PHP 前端默认值兼容性

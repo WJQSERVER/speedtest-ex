@@ -9,9 +9,21 @@ import (
 
 // empty 处理对/empty的请求，丢弃请求体并返回成功的状态码
 func empty(c *gin.Context) {
+
 	_, err := io.Copy(io.Discard, c.Request.Body)
 	if err != nil {
 		return
 	}
 	c.Status(http.StatusOK)
+
+	// for debug
+	/*
+		bodySize, err := io.Copy(io.Discard, c.Request.Body)
+		if err != nil {
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+		c.Status(http.StatusOK)
+		logInfo("empty > body size: %d", bodySize)
+	*/
 }
