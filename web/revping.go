@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-ping/ping"
+	ping "github.com/prometheus-community/pro-bing"
 )
 
 type PingResult struct {
