@@ -28,7 +28,8 @@ var (
 
 // ListenAndServe 启动HTTP服务器并设置路由处理程序
 func ListenAndServe(cfg *config.Config) error {
-	gin.SetMode(gin.DebugMode)
+	// gin.SetMode(gin.DebugMode)
+	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 	router.UseH2C = true
 
