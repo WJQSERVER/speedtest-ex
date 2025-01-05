@@ -53,6 +53,8 @@
         function I(i) { return document.getElementById(i); }
         var s = new Speedtest();
         I("startStopBtn").onclick = startStop;
+        s.setParameter("telemetry_level", "basic");
+
 
     </script>
 </body>
