@@ -26,5 +26,7 @@ path = "/data/speedtest-ex/db/speedtest.db" # 数据库文件路径
 [frontend]
 chartlist = 100 # 默认显示最近100条数据
 
+[revping]
+enable = true # 是否开启反向延迟测试
 
 ```

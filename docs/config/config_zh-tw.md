@@ -25,4 +25,7 @@ path = "/data/speedtest-ex/db/speedtest.db" # 資料庫文件路徑
 
 [frontend]
 chartlist = 100 # 預設顯示最近100條數據
+
+[revping]
+enable = true # 是否啟用反向Ping測試
 ```
