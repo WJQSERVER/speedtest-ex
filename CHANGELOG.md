@@ -1,5 +1,22 @@
 # 更新日志
 
+25w06a
+---
+- PRE-RELEASE: 作为0.0.6的预发布版本, 请勿用于生产环境
+- FIX: 修复工作流配置导致的编译问题
+- CHANGE: 改进revping前端显示
+
+0.0.5
+---
+- FIX: 修复遥测数据上传问题
+- PR: [PR #8](https://github.com/WJQSERVER/speedtest-ex/pull/8)
+
+25w05a
+---
+- PRE-RELEASE: 作为0.0.4的修复版本的预发布版本, 请勿用于生产环境
+- FIX: 修复遥测数据上传问题
+- PR: [PR #7](https://github.com/WJQSERVER/speedtest-ex/pull/7)
+
 0.0.4
 ---
 - ADD: 加入反向ping显示
