@@ -51,7 +51,7 @@ func pingIP(c *gin.Context, cfg *config.Config) {
 	} else {
 		results := PingResult{
 			IP:      ip,
-			Success: true,
+			Success: false,
 			RTT:     0,
 		}
 		c.JSON(http.StatusOK, results)

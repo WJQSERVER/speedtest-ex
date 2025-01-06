@@ -42,12 +42,8 @@ async function icmpping() {
     const pingValueDiv = document.getElementById('pingValue');
 
     if (data.success) {
-        /* icmpresultDiv.innerHTML = `
-             <p> ${data.rtt.toFixed(3)} ms</p>
-         `; */
         pingValueDiv.textContent = data.rtt.toFixed(3); // 更新当前 Ping 值
     } else {
-        /* icmpresultDiv.innerHTML = `<p style="color: red;">错误: ${data.error}</p>`; */
         pingValueDiv.textContent = '-'; // 重置 Ping 值
     }
 }
