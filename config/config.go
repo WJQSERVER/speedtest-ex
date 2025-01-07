@@ -11,6 +11,7 @@ type Config struct {
 	Database DatabaseConfig
 	Frontend FrontendConfig
 	RevPing  RevPingConfig
+	Auth     AuthConfig
 }
 
 /*
@@ -71,6 +72,20 @@ enable = true # 是否开启反向延迟测试
 */
 type RevPingConfig struct {
 	Enable bool `toml:"enable"`
+}
+
+/*
+[auth]
+enable = false # 是否开启鉴权
+username = "admin" # 鉴权用户名
+password = "password" # 鉴权密码
+secret = "secret" # 加密密钥, 用于生产session cookie, 请务必修改
+*/
+type AuthConfig struct {
+	Enable   bool   `toml:"enable"`
+	Username string `toml:"username"`
+	Password string `toml:"password"`
+	Secret   string `toml:"secret"`
 }
 
 // LoadConfig 从 TOML 配置文件加载配置
