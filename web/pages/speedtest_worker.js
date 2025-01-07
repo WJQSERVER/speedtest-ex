@@ -299,6 +299,7 @@ function getIp(done) {
 	else ipCalled = true; // getIp是否已被调用？
 	let startT = new Date().getTime();
 	xhr = new XMLHttpRequest();
+	xhr.withCredentials = true;
 	xhr.onload = function () {
 		tlog("IP: " + xhr.responseText + "，耗时 " + (new Date().getTime() - startT) + "ms");
 		try {
@@ -339,6 +340,7 @@ function dlTest(done) {
 				tverb("dl测试流开始 " + i + " " + delay);
 				let prevLoaded = 0; // 上次调用onprogress时加载的字节数
 				let x = new XMLHttpRequest();
+				x.withCredentials = true;
 				xhr[i] = x;
 				xhr[i].onprogress = function (event) {
 					tverb("dl流进度事件 " + i + " " + event.loaded);
@@ -467,6 +469,7 @@ function ulTest(done) {
 					tverb("ul测试流开始 " + i + " " + delay);
 					let prevLoaded = 0; // 上次调用onprogress时传输的字节数
 					let x = new XMLHttpRequest();
+					x.withCredentials = true;
 					xhr[i] = x;
 					let ie11workaround;
 					if (settings.forceIE11Workaround) ie11workaround = true;
@@ -580,6 +583,7 @@ function ulTest(done) {
 		tverb("在执行上传测试之前发送POST请求");
 		xhr = [];
 		xhr[0] = new XMLHttpRequest();
+		xhr[0].withCredentials = true;
 		xhr[0].onload = xhr[0].onerror = function () {
 			tverb("POST请求已发送，开始上传测试");
 			testFunction();
@@ -608,6 +612,7 @@ function pingTest(done) {
 		pingProgress = i / settings.count_ping;
 		prevT = new Date().getTime();
 		xhr[0] = new XMLHttpRequest();
+		xhr[0].withCredentials = true;
 		xhr[0].onload = function () {
 			// pong
 			tverb("pong");
@@ -689,6 +694,7 @@ function pingTest(done) {
 function sendTelemetry(done) {
 	if (settings.telemetry_level < 1) return;
 	xhr = new XMLHttpRequest();
+	xhr.withCredentials = true;
 	xhr.onload = function () {
 		try {
 			const parts = xhr.responseText.split(" ");

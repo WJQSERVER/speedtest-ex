@@ -28,4 +28,11 @@ chartlist = 100 # 預設顯示最近100條數據
 
 [revping]
 enable = true # 是否啟用反向Ping測試
+
+[auth]
+enable = false # 是否啟用驗證
+username = "admin" # 驗證用戶名
+password = "password" # 驗證密碼
+secret = "secret" # 加密密鑰，用於生成會話cookie，請務必修改
+
 ```

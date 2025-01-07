@@ -34,17 +34,33 @@ function initUI() {
 setTimeout(function () { initUI(); }, 100);
 
 let intervalId;
+let timeoutCount = 0;
 
 async function icmpping() {
-    const response = await fetch(`/revping`);
-    const data = await response.json();
-    const resultDiv = document.getElementById('result');
-    const pingValueDiv = document.getElementById('pingValue');
+    try {
+        const response = await fetch(`/revping`);
+        const data = await response.json();
+        //const resultDiv = document.getElementById('result');
+        const pingValueDiv = document.getElementById('pingValue');
 
-    if (data.success) {
-        pingValueDiv.textContent = data.rtt.toFixed(3); // 更新当前 Ping 值
-    } else {
-        pingValueDiv.textContent = '-'; // 重置 Ping 值
+        if (data.success) {
+            pingValueDiv.textContent = data.rtt.toFixed(3); // 更新当前 Ping 值
+            timeoutCount = 0; // 重置超时计数器
+        } else {
+            pingValueDiv.textContent = '-'; // 重置 Ping 值
+            if (data.error === "timeout") {
+                timeoutCount++; // 超时计数器加一
+                if (timeoutCount >= 5) { // 超时计数器达到5次，停止定时器
+                    console.log("RevPing: 5 timeouts detected; stopping the interval. The backend is unable to use ICMP Echo to receive a reply from your IP.");
+                    clearInterval(intervalId)
+                }
+            } else {
+                timeoutCount = 0; // 重置超时计数器
+            }
+        }
+
+    } catch (error) {
+        console.error(error);
     }
 }
 

@@ -148,6 +148,7 @@ Speedtest.prototype = {
     if (this._state != 1) throw "服务器选择后无法添加服务器";
     this._settings.mpot = true;
     let xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
     xhr.onload = function () {
       try {
         const servers = JSON.parse(xhr.responseText);
@@ -207,6 +208,7 @@ Speedtest.prototype = {
       const ping = function (url, rtt) {
         url += (url.match(/\?/) ? "&" : "?") + "cors=true";
         let xhr = new XMLHttpRequest();
+        xhr.withCredentials = true;
         let t = new Date().getTime();
         xhr.onload = function () {
           if (xhr.responseText.length == 0) {

@@ -29,4 +29,10 @@ chartlist = 100 # 默认显示最近100条数据
 [revping]
 enable = true # 是否开启反向延迟测试
 
+[auth]
+enable = false # 是否开启鉴权
+username = "admin" # 鉴权用户名
+password = "password" # 鉴权密码
+secret = "secret" # 加密密钥, 用于生产session cookie, 请务必修改
+
 ```

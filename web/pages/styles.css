@@ -3,7 +3,7 @@ html {
     margin: 0;
     padding: 0;
     font-family: sans-serif;
-    background-color: #e8eaed;
+    background-color: #ebebeb;
     /* 更现代的浅灰背景 */
     color: #333;
 }
@@ -12,7 +12,7 @@ html {
     max-width: 1200px;
     margin: 2.5% auto;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(240, 240, 240, 0.9);
     /* 半透明白色背景 */
     border-radius: 20px;
     /* 圆角 */

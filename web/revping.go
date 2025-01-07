@@ -1,8 +1,11 @@
 package web
 
 import (
+	"context"
+	"errors"
 	"net/http"
 	"speedtest/config"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	ping "github.com/prometheus-community/pro-bing"
@@ -29,10 +32,19 @@ func pingIP(c *gin.Context, cfg *config.Config) {
 			c.JSON(http.StatusInternalServerError, PingResult{IP: ip, Success: false, Error: err.Error()})
 			return
 		}
+		// timeout 设置为 3 秒
+		timeout := 3 * time.Second
+		//timeout := 10 * time.Nanosecond // for debug
 
+		ctx, cancel := context.WithTimeout(context.Background(), timeout)
+		defer cancel()
 		pinger.Count = 1 // 只发送一次 ping
-		err = pinger.Run()
+		err = pinger.RunWithContext(ctx)
 		if err != nil {
+			if errors.Is(err, context.DeadlineExceeded) {
+				c.JSON(http.StatusRequestTimeout, PingResult{IP: ip, Success: false, Error: "timeout"})
+				return
+			}
 			c.JSON(http.StatusInternalServerError, PingResult{IP: ip, Success: false, Error: err.Error()})
 			return
 		}

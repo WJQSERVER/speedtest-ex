@@ -28,4 +28,10 @@ chartlist = 100 # Default to display the most recent 100 entries
 
 [revping]
 enable = true # Enable reverse ping test
+
+[auth]
+enable = false # Enable authentication
+username = "admin" # Username for authentication
+password = "password" # Password for authentication
+secret = "secret" # Secret key for Generating Session Cookies. You should change this to a secure value.
 ``` 

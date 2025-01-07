@@ -206,7 +206,9 @@
         // 获取图表数据
         async function fetchChartData() {
             try {
-                const response = await fetch('/api/chart-data');
+                const response = await fetch('/api/chart-data', {
+                    credentials: 'include'
+                    });
                 const data = await response.json();
                 return data.reverse(); // 反转数组使数据按时间正序显示
             } catch (error) {

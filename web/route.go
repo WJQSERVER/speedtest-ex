@@ -1,16 +1,16 @@
 package web
 
 import (
-	"embed"
 	"fmt"
-	"io/fs"
-	"net/http"
+	"regexp"
 	"speedtest/config"
 	"speedtest/database"
 	"speedtest/results"
 
 	"github.com/WJQSERVER-STUDIO/go-utils/logger"
 	"github.com/gin-contrib/cors"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,10 +21,7 @@ var (
 	logError   = logger.LogError
 )
 
-var (
-	//go:embed pages/*
-	assetsFS embed.FS
-)
+var pagesPathRegex = regexp.MustCompile(`^[\w/]+$`)
 
 // ListenAndServe 启动HTTP服务器并设置路由处理程序
 func ListenAndServe(cfg *config.Config) error {
@@ -33,12 +30,34 @@ func ListenAndServe(cfg *config.Config) error {
 	router := gin.Default()
 	router.UseH2C = true
 
+	if cfg.Auth.Enable == true {
+		logInfo("auth enabled")
+		// 设置 session 中间件
+		store := cookie.NewStore([]byte(cfg.Auth.Secret))
+		router.Use(sessions.Sessions("mysession", store))
+		// 应用 session 中间件
+		router.Use(SessionMiddleware())
+
+	}
+
 	// CORS
 	router.Use(cors.New(cors.Config{
 		AllowAllOrigins: true,
 		AllowMethods:    []string{"GET", "POST", "OPTIONS", "HEAD"},
 		AllowHeaders:    []string{"*"},
 	}))
+	if cfg.Auth.Enable {
+		// 添加登录路由
+		logInfo("auth enabled")
+		router.POST("/api/login", func(c *gin.Context) {
+			AuthLogin(c, cfg)
+		})
+
+		// 添加登出路由
+		router.GET("/api/logout", func(c *gin.Context) {
+			AuthLogout(c)
+		})
+	}
 
 	backendUrl := "/backend"
 	// 记录遥测数据
@@ -94,12 +113,11 @@ func ListenAndServe(cfg *config.Config) error {
 		results.Record(c, cfg)
 	})
 
-	// assets 嵌入文件系统
-	pages, err := fs.Sub(assetsFS, "pages")
-	if err != nil {
-		logError("Failed when processing pages: %s", err)
-	}
-	router.NoRoute(gin.WrapH(http.FileServer(http.FS(pages))))
+	//router.NoRoute(gin.WrapH(http.FileServer(http.FS(pages))))
+	// 处理所有请求
+	router.NoRoute(func(c *gin.Context) {
+		PagesEmbedFS(c)
+	})
 
 	return StartServer(cfg, router)
 }
