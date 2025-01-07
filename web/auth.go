@@ -29,6 +29,16 @@ func SessionMiddleware() gin.HandlerFunc {
 func AuthLogin(c *gin.Context, cfg *config.Config) {
 	username := c.PostForm("username")
 	password := c.PostForm("password")
+	// 输入验证
+	if username == "" || password == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "请提供用户名和密码"})
+		return
+	}
+
+	// 重新生成会话ID防止会话固定攻击
+	session := sessions.Default(c)
+	session.Clear()
+	session.Save()
 
 	// 这里应该验证用户名和密码
 	if username == cfg.Auth.Username && password == cfg.Auth.Password {

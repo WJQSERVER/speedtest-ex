@@ -31,9 +31,13 @@ func ListenAndServe(cfg *config.Config) error {
 	router.UseH2C = true
 
 	if cfg.Auth.Enable == true {
-		logInfo("auth enabled")
 		// 设置 session 中间件
 		store := cookie.NewStore([]byte(cfg.Auth.Secret))
+		store.Options(sessions.Options{
+			Path:     "/",
+			MaxAge:   86400 * 7, // 7 days
+			HttpOnly: true,
+		})
 		router.Use(sessions.Sessions("mysession", store))
 		// 应用 session 中间件
 		router.Use(SessionMiddleware())
@@ -48,7 +52,6 @@ func ListenAndServe(cfg *config.Config) error {
 	}))
 	if cfg.Auth.Enable {
 		// 添加登录路由
-		logInfo("auth enabled")
 		router.POST("/api/login", func(c *gin.Context) {
 			AuthLogin(c, cfg)
 		})
