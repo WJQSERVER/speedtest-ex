@@ -65,6 +65,7 @@ func pingIP(c *gin.Context, cfg *config.Config) {
 			IP:      ip,
 			Success: false,
 			RTT:     0,
+			Error:   "revping-not-online",
 		}
 		c.JSON(http.StatusOK, results)
 	}

@@ -48,10 +48,10 @@ async function icmpping() {
             timeoutCount = 0; // 重置超时计数器
         } else {
             pingValueDiv.textContent = '-'; // 重置 Ping 值
-            if (data.error === "timeout") {
+            if (data.error === "timeout" || data.error === "revping-not-online") {
                 timeoutCount++; // 超时计数器加一
                 if (timeoutCount >= 5) { // 超时计数器达到5次，停止定时器
-                    console.log("RevPing: 5 timeouts detected; stopping the interval. The backend is unable to use ICMP Echo to receive a reply from your IP.");
+                    console.log("RevPing: 5 timeouts detected; stopping the interval. The backend is unable to use ICMP Echo to receive a reply from your IP. / RevPing function is disabled. ");
                     clearInterval(intervalId)
                 }
             } else {

@@ -7,6 +7,7 @@
 - ADD: 加入鉴权功能与对于的前端页面, 同时对核心`speedtest.js`与`speedtest_worker.js`内请求后端的部分进行了适应性修改 (实验性, 需要更多测试)
 - CHANGE: 改进前端静态文件处理, 进行一定改进
 - CHANGE: 对`route.go`进行了优化, 独立部分处理逻辑
+- CHANGE: 改进`revping`功能, 加入熔断, 若由于`timeout`或`revping-not-online`导致的无法返回结果, 在连续失败后会停止发起请求, 避免阻塞
 
 0.0.6
 ---
