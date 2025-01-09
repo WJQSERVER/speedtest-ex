@@ -69,5 +69,19 @@ function startIcmpPing() {
     intervalId = setInterval(icmpping, 2500); // 每隔2.5秒请求一次
 }
 
+function fetchVersion() {
+    fetch('/api/version')
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('versionBadge').textContent = data.Version;
+    })
+    .catch(error => {
+        console.error('Failed to fetch version:', error);
+    });
+}
+document.addEventListener('DOMContentLoaded', fetchVersion);
+
+
+
 // 网页加载时开始请求
 window.onload = startIcmpPing;

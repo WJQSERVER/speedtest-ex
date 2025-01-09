@@ -38,7 +38,7 @@ jobs:
           GOARCH: ${{ matrix.goarch }}         
           
         run: |
-          CGO_ENABLED=0 go build -o  ${{ env.OUTPUT_BINARY }}-${{matrix.goos}}-${{matrix.goarch}} ./main.go
+          CGO_ENABLED=0 go build -ldflags "-X main.version=${{ env.VERSION }}" -o ${{ env.OUTPUT_BINARY }}-${{matrix.goos}}-${{matrix.goarch}} ./main.go
       - name: Package
         env:
           GOOS: ${{ matrix.goos }}

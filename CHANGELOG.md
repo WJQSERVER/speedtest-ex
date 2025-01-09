@@ -1,5 +1,13 @@
 # 更新日志
 
+25w08a
+---
+- PRE-RELEASE: 作为0.0.8的预发布版本, 请勿用于生产环境
+- CHANGE: 大量扩充可传入的flag
+- CHANGE: 修改`config`模块, 加入保存配置与重载配置
+- CHANGE: 加入通过`crypto/rand`生成secret key的功能
+- CHANGE: 增加前端版本号显示
+
 0.0.7
 ---
 - ADD: 加入鉴权功能与对应的前端页面, 同时对核心`speedtest.js`与`speedtest_worker.js`内请求后端的部分进行了适应性修改 (实验性, 需要更多测试)
