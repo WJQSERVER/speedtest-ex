@@ -1,12 +1,16 @@
 # 更新日志
 
-25w08a
+25w08b
 ---
 - PRE-RELEASE: 作为0.0.8的预发布版本, 请勿用于生产环境
 - CHANGE: 大量扩充可传入的flag
 - CHANGE: 修改`config`模块, 加入保存配置与重载配置
 - CHANGE: 加入通过`crypto/rand`生成secret key的功能
 - CHANGE: 增加前端版本号显示
+
+25w08a
+---
+- PRE-RELEASE: 由于当日Github故障造成的CI/CD流程错误, 此版本弃用
 
 0.0.7
 ---
