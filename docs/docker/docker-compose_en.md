@@ -34,5 +34,5 @@ services:
 ## Start the Service
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```

@@ -24,7 +24,7 @@ var (
 var pagesPathRegex = regexp.MustCompile(`^[\w/]+$`)
 
 // ListenAndServe 启动HTTP服务器并设置路由处理程序
-func ListenAndServe(cfg *config.Config) error {
+func ListenAndServe(cfg *config.Config, version string) error {
 	// gin.SetMode(gin.DebugMode)
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
@@ -50,6 +50,7 @@ func ListenAndServe(cfg *config.Config) error {
 		AllowMethods:    []string{"GET", "POST", "OPTIONS", "HEAD"},
 		AllowHeaders:    []string{"*"},
 	}))
+
 	if cfg.Auth.Enable {
 		// 添加登录路由
 		router.POST("/api/login", func(c *gin.Context) {
@@ -61,6 +62,13 @@ func ListenAndServe(cfg *config.Config) error {
 			AuthLogout(c)
 		})
 	}
+
+	// 版本信息接口
+	router.GET("/api/version", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"Version": version,
+		})
+	})
 
 	backendUrl := "/backend"
 	// 记录遥测数据

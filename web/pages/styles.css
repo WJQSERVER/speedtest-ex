@@ -181,6 +181,23 @@ button {
     font-family: sans-serif;
 }
 
+.version-badge {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #39c5bb;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease-in-out;
+}
+
+.version-badge:hover {
+    background-color: #39c5bc9f;
+}
+
 footer {
     line-height: 1.25;
     text-align: center;
