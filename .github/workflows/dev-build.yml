@@ -28,6 +28,7 @@ jobs:
           else
             echo "DEV-VERSION file not found!" && exit 1
           fi
+          echo "VERSION=${{ env.VERSION }}" >> $GITHUB_ENV
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
