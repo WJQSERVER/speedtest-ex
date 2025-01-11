@@ -171,12 +171,12 @@ mkdir -p ${bin_dir}/log
 mkdir -p ${bin_dir}/db
 
 # 获取最新版本号
-VERSION=$(curl -s https://raw.githubusercontent.com/WJQSERVER/speedtest-ex/main/VERSION)
+VERSION=$(curl -s https://raw.githubusercontent.com/WJQSERVER/speedtest-ex/dev/DEV-VERSION)
 if [ -z "$VERSION" ]; then
     echo "无法获取版本号"
     exit 1
 fi
-wget -q -O ${bin_dir}/VERSION https://raw.githubusercontent.com/WJQSERVER/speedtest-ex/main/VERSION
+wget -q -O ${bin_dir}/VERSION https://raw.githubusercontent.com/WJQSERVER/speedtest-ex/dev/DEV-VERSION
 
 # 下载speedtest-ex
 wget -q -O ${bin_dir}/speedtest-ex.tar.gz https://github.com/WJQSERVER/speedtest-ex/releases/download/${VERSION}/speedtest-ex-linux-${ARCH}.tar.gz
@@ -197,7 +197,7 @@ if [ -f ${bin_dir}/config/config.toml ]; then
     echo "[WARNING] 请检查配置文件是否正确，DEV版本升级时请注意配置文件兼容性"
     sleep 2
 else
-    wget -q -O ${bin_dir}/config/config.toml https://raw.githubusercontent.com/WJQSERVER/speedtest-ex/main/deploy/config.toml
+    wget -q -O ${bin_dir}/config/config.toml https://raw.githubusercontent.com/WJQSERVER/speedtest-ex/dev/deploy/config.toml
 fi
 
 

@@ -1,0 +1,29 @@
+[Server]
+basePath = ""
+host = "0.0.0.0"
+port = 8989
+
+[Log]
+logFilePath = "./log/speedtest-ex.log"
+maxLogSize = 5
+
+[IPinfo]
+ipinfo_api_key = ""
+ipinfo_url = ""
+model = "ipinfo"
+
+[Database]
+model = "bolt"
+path = "./db/speedtest-ex.db"
+
+[Frontend]
+chartlist = 100
+
+[RevPing]
+enable = true
+
+[Auth]
+enable = false
+password = "password"
+secret = "cW9hT1HntVO5Rf9w2obVxPvy3i2DHmFyrorq7O1lu1Y"
+username = "admin"
