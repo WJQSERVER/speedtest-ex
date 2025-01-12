@@ -140,7 +140,7 @@ func GetChartData(db database.DataAccess, cfg *config.Config, c *gin.Context) {
 		}
 		record.ISPInfo = string(ispInfoJSON)
 
-		logInfo("%s", record.ISPInfo)
+		//logInfo("%s", record.ISPInfo)
 		//logInfo("%s", ispInfo.ProcessedString)
 		chartData = append(chartData, map[string]interface{}{
 			"timestamp": record.Timestamp,

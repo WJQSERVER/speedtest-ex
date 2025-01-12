@@ -3,6 +3,10 @@ basePath = ""
 host = "0.0.0.0"
 port = 8989
 
+[Speedtest]
+downDataChunkSize = 4 #mb
+downDataChunkCount = 4
+
 [Log]
 logFilePath = "./log/speedtest-ex.log"
 maxLogSize = 5

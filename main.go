@@ -191,6 +191,7 @@ func init() {
 	}
 	//updateConfig()
 	setupLogger()
+	web.RandomDataInit(cfg)
 }
 
 func main() {

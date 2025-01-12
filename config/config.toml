@@ -1,29 +1,33 @@
 [Server]
-  host = "0.0.0.0"
-  port = 8989
-  basePath = ""
+basePath = ""
+host = "0.0.0.0"
+port = 8989
+
+[Speedtest]
+downDataChunkSize = 4 #mb
+downDataChunkCount = 4
 
 [Log]
-  logFilePath = "/data/speedtest-ex/log/speedtest-ex.log"
-  maxLogSize = 5
+logFilePath = "/data/speedtest-ex/log/speedtest-ex.log"
+maxLogSize = 5
 
 [IPinfo]
-  model = "ipinfo"
-  ipinfo_url = ""
-  ipinfo_api_key = ""
+ipinfo_api_key = ""
+ipinfo_url = ""
+model = "ipinfo"
 
 [Database]
-  model = "bolt"
-  path = "/data/speedtest-ex/db/speedtest.db"
+model = "bolt"
+path = "/data/speedtest-ex/db/speedtest.db"
 
 [Frontend]
-  chartlist = 100
+chartlist = 100
 
 [RevPing]
-  enable = true
+enable = true
 
 [Auth]
-  enable = false
-  username = "admin"
-  password = "password"
-  secret = "secret"
+enable = false
+password = "password"
+secret = "secret"
+username = "admin"

@@ -2,6 +2,7 @@ package web
 
 import (
 	"fmt"
+	"io"
 	"regexp"
 	"speedtest/config"
 	"speedtest/database"
@@ -27,8 +28,10 @@ var pagesPathRegex = regexp.MustCompile(`^[\w/]+$`)
 func ListenAndServe(cfg *config.Config, version string) error {
 	// gin.SetMode(gin.DebugMode)
 	gin.SetMode(gin.ReleaseMode)
-	router := gin.Default()
+	gin.LoggerWithWriter(io.Discard)
+	router := gin.New()
 	router.UseH2C = true
+	router.Use(gin.Recovery())
 
 	if cfg.Auth.Enable == true {
 		// 设置 session 中间件

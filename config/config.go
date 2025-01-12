@@ -7,13 +7,14 @@ import (
 )
 
 type Config struct {
-	Server   ServerConfig
-	Log      LogConfig
-	IPinfo   IPinfoConfig
-	Database DatabaseConfig
-	Frontend FrontendConfig
-	RevPing  RevPingConfig
-	Auth     AuthConfig
+	Server    ServerConfig
+	Speedtest SpeedtestConfig
+	Log       LogConfig
+	IPinfo    IPinfoConfig
+	Database  DatabaseConfig
+	Frontend  FrontendConfig
+	RevPing   RevPingConfig
+	Auth      AuthConfig
 }
 
 /*
@@ -26,6 +27,17 @@ type ServerConfig struct {
 	Host     string `toml:"host"`
 	Port     int    `toml:"port"`
 	BasePath string `toml:"basePath"`
+}
+
+/*
+[Speedtest]
+downDataChunkSize = 4 #mb
+downDataChunkCount = 4
+*/
+
+type SpeedtestConfig struct {
+	DownDataChunkSize  int `toml:"downDataChunkSize"`  // mb
+	DownDataChunkCount int `toml:"downDataChunkCount"` // 下载数据块数量
 }
 
 /*
