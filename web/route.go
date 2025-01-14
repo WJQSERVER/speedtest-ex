@@ -24,7 +24,26 @@ var (
 
 var pagesPathRegex = regexp.MustCompile(`^[\w/]+$`)
 
-// ListenAndServe 启动HTTP服务器并设置路由处理程序
+// ListenAndServe 启动HTTP服务器并配置路由处理程序。它设置Gin路由器、会话管理、CORS、身份验证和各种API端点。
+// 
+// 参数:
+//   - cfg: 服务器配置，包含认证、服务器和其他设置
+//   - version: 当前服务器版本字符串
+//
+// 返回值:
+//   - error: 如果服务器启动失败，返回错误信息
+//
+// 主要功能:
+//   - 配置Gin服务器为发布模式
+//   - 设置会话管理（如果启用认证）
+//   - 配置跨域资源共享（CORS）
+//   - 添加登录和登出路由（如果启用认证）
+//   - 提供版本信息接口
+//   - 配置后端和基础路径路由
+//   - 添加遥测、IP获取、垃圾数据和图表数据等接口
+//   - 设置WebSocket端点
+//   - 为PHP前端提供兼容性路由
+//   - 处理未匹配的请求
 func ListenAndServe(cfg *config.Config, version string) error {
 	// gin.SetMode(gin.DebugMode)
 	gin.SetMode(gin.ReleaseMode)

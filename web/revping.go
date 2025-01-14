@@ -89,6 +89,36 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
+// pingIP performs a reverse ping operation on the specified IP address.
+// It checks if reverse pinging is enabled in the configuration and attempts to ping the IP.
+// If the IP is empty or pinging is disabled, it returns an appropriate error result.
+// 
+// The function supports a single ping attempt with a 3-second timeout. If the ping is successful,
+// it returns the round-trip time in milliseconds. If a timeout occurs or an error is encountered,
+// it returns a PingResult with failure details.
+// 
+// Parameters:
+//   - ip: The target IP address to ping
+//   - cfg: Configuration object containing reverse ping settings
+//
+// Returns:
+//   - PingResult: Contains ping operation details including IP, success status, RTT, and any error
+//   - error: Any critical error encountered during the ping process
+//
+// Possible error conditions:
+//   - Empty IP address
+//   - Pinger creation failure
+//   - Ping timeout
+//   - Network-related errors
+//
+// Example:
+//   result, err := pingIP("8.8.8.8", config)
+//   if err != nil {
+//     // Handle error
+//   }
+//   if result.Success {
+//     fmt.Printf("Ping successful, RTT: %.2f ms", result.RTT)
+//   }
 func pingIP(ip string, cfg *config.Config) (PingResult, error) {
 	if ip == "" {
 		return PingResult{}, errors.New("IP address is required")
@@ -128,6 +158,7 @@ func pingIP(ip string, cfg *config.Config) (PingResult, error) {
 	}
 }
 
+// handleWebSocket establishes a WebSocket connection for continuous IP ping monitoring. It upgrades an HTTP connection to WebSocket, retrieves the client's IP address, and starts a goroutine that periodically sends ping results to the client every 2 seconds. The function handles WebSocket connection lifecycle, including initial ping, periodic updates, and graceful connection closure.
 func handleWebSocket(c *gin.Context, cfg *config.Config) {
 	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {

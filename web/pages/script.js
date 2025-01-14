@@ -91,6 +91,25 @@ window.onload = startIcmpPing;
 let socket;
 let timeoutCount = 0;
 
+/**
+ * Establishes a WebSocket connection for real-time network ping monitoring.
+ * 
+ * @description
+ * Creates a WebSocket connection to the server using the appropriate protocol (wss/ws)
+ * and handles incoming ping data. Manages connection state, updates UI with ping values,
+ * and handles connection errors and timeouts.
+ * 
+ * @remarks
+ * - Automatically selects secure (wss) or standard (ws) WebSocket protocol based on page protocol
+ * - Tracks consecutive timeouts and closes connection if 5 consecutive timeouts occur
+ * - Updates ping value display in real-time
+ * 
+ * @throws {Error} Logs WebSocket connection errors to console
+ * 
+ * @example
+ * // Typically called on window load to establish network monitoring connection
+ * window.onload = setupWebSocket;
+ */
 function setupWebSocket() {
     const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
     socket = new WebSocket(`${protocol}://${window.location.host}/ws`);
@@ -129,6 +148,15 @@ function setupWebSocket() {
     };
 }
 
+/**
+ * Fetches the current application version from the server and updates the UI.
+ * 
+ * @description Sends a GET request to the '/api/version' endpoint to retrieve the application version.
+ * On successful retrieval, updates the 'versionBadge' element with the received version number.
+ * If the request fails, logs an error message to the console.
+ * 
+ * @throws {Error} Logs an error if the version fetch fails or cannot be parsed.
+ */
 function fetchVersion() {
     fetch('/api/version')
     .then(response => response.json())

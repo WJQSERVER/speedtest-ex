@@ -23,7 +23,27 @@ var (
 	randomData  = getRandomData(dlChunkSize)
 )
 
-// init 初始化随机数据块
+// RandomDataInit initializes the random data blocks for speed testing based on configuration settings.
+// It sets the chunk size and number of chunks for download data, either using provided configuration
+// values or falling back to default settings. The function generates random data blocks with the
+// specified chunk size and logs the initialization parameters.
+//
+// Parameters:
+//   - cfg: A configuration object containing speedtest-related settings for chunk size and count.
+//
+// The function modifies global variables:
+//   - dlChunkSize: Set to the configured chunk size in bytes, or default to chunkSize
+//   - dlChunks: Set to the configured number of chunks, or default to dfchunks
+//   - randomData: Generated random data blocks using the determined chunk size
+//
+// Example:
+//   config := &config.Config{
+//     Speedtest: config.SpeedtestConfig{
+//       DownDataChunkSize: 2,   // 2 MiB chunks
+//       DownDataChunkCount: 8,  // 8 chunks
+//     },
+//   }
+//   RandomDataInit(config)
 func RandomDataInit(cfg *config.Config) {
 	if cfg.Speedtest.DownDataChunkSize != 0 {
 		dlChunkSize = cfg.Speedtest.DownDataChunkSize * 1024 * 1024
@@ -39,7 +59,7 @@ func RandomDataInit(cfg *config.Config) {
 	fmt.Printf("RandomDataInit: dlChunkSize=%d, dlChunks=%d\n", dlChunkSize, dlChunks)
 }
 
-// garbage 处理对/garbage的请求，返回指定数量的随机数据块
+// If an error occurs during data writing, the request is aborted with an internal server error.
 func garbage(c *gin.Context) {
 	// 设置响应头信息
 

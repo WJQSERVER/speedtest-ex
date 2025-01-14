@@ -89,7 +89,29 @@ func (rl *SimpleRateLimiter) Allow() bool {
 	return false
 }
 
-// GetChartData 处理获取图表数据的请求
+// GetChartData handles requests for retrieving chart data with rate limiting and ISP information processing.
+// It fetches the last N records from the database, preprocesses ISP information, and returns the data as JSON.
+// The function performs rate limiting, handles potential errors in data retrieval and processing, and sanitizes IP information.
+//
+// Parameters:
+//   - db: Database access interface for retrieving records
+//   - cfg: Configuration containing chart list settings
+//   - c: Gin context for HTTP request handling
+//
+// Returns:
+//   - JSON response with chart data or error message
+//   - HTTP status codes: 200 (OK), 429 (Too Many Requests), 500 (Internal Server Error)
+//
+// Behavior:
+//   - Applies rate limiting to prevent excessive requests
+//   - Retrieves last N records from database
+//   - Preprocesses and sanitizes ISP and IP information
+//   - Converts speed metrics to floating-point values
+//   - Handles potential JSON encoding/decoding errors
+//   - Logs errors during processing
+//
+// Example:
+//   Typical usage in a web route handler for fetching speed test chart data
 func GetChartData(db database.DataAccess, cfg *config.Config, c *gin.Context) {
 
 	if !rateLimiter.Allow() {
