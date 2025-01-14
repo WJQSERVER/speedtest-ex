@@ -179,6 +179,7 @@ func debugOutput() {
 	fmt.Printf("Secret: %s\n", secret)
 }
 
+// 6. Initializes random data for the web module using the current configuration
 func init() {
 	ReadFlag()
 	loadConfig()
@@ -194,6 +195,7 @@ func init() {
 	web.RandomDataInit(cfg)
 }
 
+// In development mode, it sets the version to "dev" and outputs debug configuration information.
 func main() {
 	flag.Parse()
 	database.SetDBInfo(cfg)
