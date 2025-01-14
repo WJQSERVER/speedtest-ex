@@ -10,6 +10,10 @@ host = "0.0.0.0" # 監聽地址
 port = 8989 # 監聽端口
 basePath = "" # 兼容LiberSpeed而保留, 無需求請不要修改
 
+[Speedtest]
+downDataChunkSize = 4 #mb 下載數據分塊大小
+downDataChunkCount = 4 # 下載數據分塊數量
+
 [log]
 logFilePath = "/data/speedtest-ex/log/speedtest-ex.log" # 日誌文件路徑
 maxLogSize = 5 # MB 日誌文件最大容量

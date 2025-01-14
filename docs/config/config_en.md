@@ -10,6 +10,10 @@ host = "0.0.0.0" # Listening address
 port = 8989 # Listening port
 basePath = "" # Retained for compatibility with LiberSpeed; do not modify if not needed
 
+[Speedtest]
+downDataChunkSize = 4 #mb Download data chunk size
+downDataChunkCount = 4 # Download data chunk count
+
 [log]
 logFilePath = "/data/speedtest-ex/log/speedtest-ex.log" # Path to the log file
 maxLogSize = 5 # MB Maximum size of the log file

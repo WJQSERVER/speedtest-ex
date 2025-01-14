@@ -1,5 +1,33 @@
 # 更新日志
 
+0.0.9
+---
+- CHANGE: 将`Revping`转为通过`WebSocket`通道传递数据
+- CHANGE: 完善bin安装脚本
+- REMOVE: 移除部分无用保留页面
+- CHANGE: 关闭`gin`日志输出, 避免影响性能(go终端日志输出性能较差, 易成为性能瓶颈)
+- CHANGE: 新增`[Speedtest]`配置块,`downDataChunkSize = 4 #mb` `downDataChunkCount = 4` 分别用于设置下载数据块大小与块数量, 配置更加灵活
+
+25w09b
+---
+- PRE-RELEASE: 作为0.0.9的预发布版本, 请勿用于生产环境
+- CHANGE: 关闭`gin`日志输出, 避免影响性能(go终端日志输出性能较差, 易成为性能瓶颈)
+- CHANGE: 新增`[Speedtest]`配置块,`downDataChunkSize = 4 #mb` `downDataChunkCount = 4` 分别用于设置下载数据块大小与块数量, 配置更加灵活
+
+25w09a
+---
+- PRE-RELEASE: 作为0.0.9的预发布版本, 请勿用于生产环境
+- CHANGE: 将`Revping`转为通过`WebSocket`通道传递数据
+- CHANGE: 完善bin安装脚本
+- REMOVE: 移除部分保留页面
+
+0.0.8
+---
+- CHANGE: 大量扩充可传入的flag
+- CHANGE: 修改`config`模块, 加入保存配置与重载配置
+- CHANGE: 加入通过`crypto/rand`生成secret key的功能
+- CHANGE: 增加前端版本号显示
+
 25w08b
 ---
 - PRE-RELEASE: 作为0.0.8的预发布版本, 请勿用于生产环境

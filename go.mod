@@ -10,7 +10,7 @@ require (
 
 require (
 	github.com/andybalholm/brotli v1.1.1 // indirect
-	github.com/bytedance/sonic v1.12.6 // indirect
+	github.com/bytedance/sonic v1.12.7 // indirect
 	github.com/bytedance/sonic/loader v0.2.2 // indirect
 	github.com/cloudflare/circl v1.5.0 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect
@@ -61,6 +61,7 @@ require (
 	github.com/gin-contrib/cors v1.7.3
 	github.com/gin-contrib/sessions v1.0.2
 	github.com/gin-gonic/gin v1.10.0
+	github.com/gorilla/websocket v1.5.3
 	github.com/imroc/req/v3 v3.49.1
 	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
 	github.com/prometheus-community/pro-bing v0.5.0

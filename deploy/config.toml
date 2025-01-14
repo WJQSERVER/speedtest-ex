@@ -8,7 +8,7 @@ downDataChunkSize = 4 #mb
 downDataChunkCount = 4
 
 [Log]
-logFilePath = "/data/speedtest-ex/log/speedtest-ex.log"
+logFilePath = "./log/speedtest-ex.log"
 maxLogSize = 5
 
 [IPinfo]
@@ -18,7 +18,7 @@ model = "ipinfo"
 
 [Database]
 model = "bolt"
-path = "/data/speedtest-ex/db/speedtest.db"
+path = "./db/speedtest-ex.db"
 
 [Frontend]
 chartlist = 100
@@ -29,5 +29,5 @@ enable = true
 [Auth]
 enable = false
 password = "password"
-secret = "secret"
+secret = "cW9hT1HntVO5Rf9w2obVxPvy3i2DHmFyrorq7O1lu1Y"
 username = "admin"
