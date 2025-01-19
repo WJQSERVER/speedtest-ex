@@ -29,11 +29,14 @@ zh-cn | [en](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/README_en.
 
 ## 部署与使用
 
-### Docker部署
+### 在 Docker 中部署
 
 参看[docker-cli部署SpeedTest-EX](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/docker/docker-cli_zh-cn.md)
 
 参看[docker-compose部署SpeedTest-EX](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/docker/docker-compose_zh-cn.md)
+
+### 在 OpenWrt 上运行
+参看[在 OpenWrt 上运行 Speedtest-EX](docs/openwrt/README.md)
 
 ### 配置文件
 
