@@ -18,4 +18,6 @@ speedtest-ex -cfg /path/to/config/config.toml # 傳入配置文件路徑(必選)
 
 -dev # 開啟開發模式，默認關閉(非開發用戶請不要開啟)
 
+-version # 顯示版本資訊
+
 ```
