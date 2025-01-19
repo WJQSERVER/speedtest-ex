@@ -42,14 +42,15 @@ var (
 )
 
 var (
-	cfgfile  string
-	port     int
-	initcfg  bool
-	auth     bool
-	user     string
-	password string
-	secret   string
-	dev      bool
+	cfgfile     string
+	port        int
+	initcfg     bool
+	auth        bool
+	user        string
+	password    string
+	secret      string
+	dev         bool
+	showVersion bool
 )
 
 func ReadFlag() {
@@ -61,6 +62,7 @@ func ReadFlag() {
 	passwordPtr := flag.String("password", "", "Password for auth mode")         // 密码
 	secretPtr := flag.String("secret", "", "Secret key for auth mode")           // 密钥
 	devPtr := flag.Bool("dev", false, "Development mode")                        // 开发模式
+	versionPtr := flag.Bool("version", false, "Show version")                    // 显示版本
 
 	flag.Parse()
 	//configfile = *cfgfile
@@ -72,6 +74,7 @@ func ReadFlag() {
 	password = *passwordPtr
 	secret = *secretPtr
 	dev = *devPtr
+	showVersion = *versionPtr
 }
 
 func loadConfig() {
@@ -181,6 +184,10 @@ func debugOutput() {
 
 func init() {
 	ReadFlag()
+	if showVersion {
+		fmt.Printf("SpeedTest-EX Version: %s\n", version)
+		os.Exit(0)
+	}
 	loadConfig()
 	if initcfg {
 		initConfig()

@@ -20,9 +20,15 @@
 - **重寫**：對大部分元件進行重寫與優化，使程式更加易於維護的同時提升部分性能。
 
 ## 部署與使用
-### Docker部署
-參看[docker-cli部署SpeedTest-EX](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/docker/docker-cli_zh-tw.md)  
-參看[docker-compose部署SpeedTest-EX](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/docker/docker-compose_zh-tw.md)
+
+### 使用Docker進行部署
+
+參考[docker-cli配置SpeedTest-EX](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/docker/docker-cli_zh-cn.md)
+
+請參閱[docker-compose 設定SpeedTest-EX](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/docker/docker-compose_zh-cn.md)
+
+### 在 OpenWrt 上部署
+參看[在 OpenWrt 上運行 Speedtest-EX](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/openwrt/openwrt_zh-tw.md)
 
 ### 配置檔案
 參看[配置檔案說明](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/config/config_zh-tw.md)

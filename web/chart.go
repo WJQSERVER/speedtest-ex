@@ -3,8 +3,8 @@ package web
 import (
 	"encoding/json"
 	"fmt"
-	"net"
 	"net/http"
+	"net/netip"
 	"regexp"
 	"speedtest/config"
 	"speedtest/database"
@@ -164,7 +164,8 @@ func GetIPFromProcessedString(processedString string) (string, string) {
 	}
 
 	ip := processedString[:index]
-	if !isIP(ip) {
+	_, isRegularIP := isIP(ip)
+	if !isRegularIP {
 		logWarning("IP信息不符合规范: %s", ip)
 		return "", ""
 	}
@@ -175,13 +176,13 @@ func GetIPFromProcessedString(processedString string) (string, string) {
 }
 
 // 检测IP是否符合规范
-func isIP(ip string) bool {
+func isIP(ip string) (netip.Addr, bool) {
 	// 使用net包进行检测
-	parsedIP := net.ParseIP(ip)
-	if parsedIP == nil {
-		return false
+	addr, err := netip.ParseAddr(ip)
+	if err != nil {
+		return netip.Addr{}, false
 	}
-	return true
+	return addr, true
 }
 
 // 对IP信息进行预处理, 一定程度上减少隐私问题
@@ -190,16 +191,15 @@ func PreprocessIPInfo(ip string) string {
 	if isSpecialIP(ip) {
 		return ip // 直接返回原始 IP
 	}
-	// 处理 IPv4 地址
-	if net.ParseIP(ip).To4() != nil {
+
+	//string to netip.Addr
+	addr, _ := isIP(ip)
+	if addr.Is4() {
 		parts := strings.Split(ip, ".")
 		if len(parts) == 4 {
 			return fmt.Sprintf("%s.%s.%s.x", parts[0], parts[1], parts[2]) // 保留前 24 位，最后一部分用 x 代替
 		}
-	}
-
-	// 处理 IPv6 地址
-	if net.ParseIP(ip).To16() != nil {
+	} else if addr.Is6() {
 		parts := strings.Split(ip, ":")
 		if len(parts) >= 3 {
 			return fmt.Sprintf("%s:%s:%s::", parts[0], parts[1], parts[2]) // 保留前 48 位

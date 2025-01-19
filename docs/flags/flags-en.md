@@ -18,4 +18,6 @@ speedtest-ex -cfg /path/to/config/config.toml # Path to the configuration file (
 
 -dev # Enable development mode, default is off (do not enable for non-development users)
 
+-version # Show the version of speedtest-ex
+
 ```

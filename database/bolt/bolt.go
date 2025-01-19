@@ -113,7 +113,7 @@ func (s *Storage) GetLastNRecords(limit int) ([]schema.TelemetryData, error) {
 		return nil
 	})
 
-	logInfo("Fetched %d records from storage", len(records))
+	//logInfo("Fetched %d records from storage", len(records))
 	return records, err
 }
 

@@ -1,5 +1,18 @@
 # 更新日志
 
+0.0.10
+---
+- CHANGE: 更新Go版本至1.23.5
+- ADD: 加入`-version`命令行参数, 用于显示当前版本信息
+- CHANGE: 将`net`换为`net/netip`
+
+25w10a
+---
+- PRE-RELEASE: 作为0.0.10的预发布版本, 请勿用于生产环境
+- CHANGE: 更新Go版本至1.23.5
+- ADD: 加入`-version`命令行参数, 用于显示当前版本信息
+- CHANGE: 将`net`换为`net/netip`
+
 0.0.9
 ---
 - CHANGE: 将`Revping`转为通过`WebSocket`通道传递数据
