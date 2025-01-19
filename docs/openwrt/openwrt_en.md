@@ -1,6 +1,6 @@
 # Running Speedtest-EX on OpenWrt
 
-> This is not an official adaptation of the project. If you have any issues, please refer to https://github.com/JohnsonRan/packages_net_speedtest-ex 
+> This is not an official adaptation of the project. If you have any issues, please refer to https://github.com/JohnsonRan/packages_builder
 
 ## Download and Build
 - Currently, only `arm64` and `amd64` architecture `apk` (OpenWrt-SNAPSHOT) and `ipk` files are provided.

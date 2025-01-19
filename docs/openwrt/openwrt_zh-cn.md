@@ -1,6 +1,6 @@
 # 在 OpenWrt 上运行 Speedtest-EX
 
-> 非项目官方适配, 若有问题请转至https://github.com/JohnsonRan/packages_net_speedtest-ex 
+> 非项目官方适配, 若有问题请转至https://github.com/JohnsonRan/packages_builder
 
 ## 下载构建
 - 目前仅提供 `arm64` 以及 `amd64` 架构的 `apk`(OpenWrt-SNAPSHOT) 以及 `ipk` 文件
