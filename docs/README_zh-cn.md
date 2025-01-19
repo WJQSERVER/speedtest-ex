@@ -32,7 +32,7 @@ LiberSpeed是一个开源的网络测速项目, 其使用php实现后端, 而本
 参看[docker-compose部署SpeedTest-EX](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/docker/docker-compose_zh-cn.md)
 
 ### 在 OpenWrt 上部署
-参看[在 OpenWrt 上运行 Speedtest-EX](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/openwrt/README_zh-cn.md)
+参看[在 OpenWrt 上运行 Speedtest-EX](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/openwrt/openwrt_zh-cn.md)
 
 ### 配置文件
 

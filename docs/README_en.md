@@ -25,7 +25,7 @@ Refer to [docker-cli deployment of SpeedTest-EX](https://github.com/WJQSERVER/sp
 Refer to [docker-compose deployment of SpeedTest-EX](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/docker/docker-compose_en.md)
 
 ### Deploy Speedtest-EX on OpenWrt
-Refer to [Running Speedtest-EX on OpenWrt](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/openwrt/README_en.md)
+Refer to [Running Speedtest-EX on OpenWrt](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/openwrt/openwrt_en.md)
 
 ### Configuration File
 Refer to [configuration file description](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/config/config_en.md)

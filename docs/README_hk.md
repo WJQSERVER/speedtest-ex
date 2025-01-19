@@ -25,10 +25,10 @@
 
 參看[docker-cli部署SpeedTest-EX](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/docker/docker-cli_zh-tw.md)
 
-參看[docker-compose部署SpeedTest-EX](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/docker/docker-compose_zh-cn.md)
+參看[docker-compose部署SpeedTest-EX](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/docker/docker-compose_zh-tw.md)
 
 ### 在 OpenWrt 上部署
-參看[在 OpenWrt 上運行 Speedtest-EX](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/openwrt/README_hk.md)
+參看[在 OpenWrt 上運行 Speedtest-EX](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/openwrt/openwrt_hk.md)
 
 ### 配置文件
 參看[配置文件說明](https://github.com/WJQSERVER/speedtest-ex/blob/main/docs/config/config_zh-tw.md)
