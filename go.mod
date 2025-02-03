@@ -3,7 +3,7 @@ module speedtest
 go 1.23.5
 
 require (
-	github.com/breml/rootcerts v0.2.19
+	github.com/breml/rootcerts v0.2.20
 	github.com/oklog/ulid/v2 v2.1.0
 	go.etcd.io/bbolt v1.3.11
 )
@@ -22,7 +22,7 @@ require (
 	github.com/go-playground/validator/v10 v10.24.0 // indirect
 	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
-	github.com/google/pprof v0.0.0-20250125003558-7fdb3d7e6fa0 // indirect
+	github.com/google/pprof v0.0.0-20250202011525-fc3143867406 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/context v1.1.2 // indirect
 	github.com/gorilla/securecookie v1.1.2 // indirect
@@ -47,7 +47,7 @@ require (
 	go.uber.org/mock v0.5.0 // indirect
 	golang.org/x/arch v0.13.0 // indirect
 	golang.org/x/crypto v0.32.0 // indirect
-	golang.org/x/exp v0.0.0-20250106191152-7588d65b2ba8 // indirect
+	golang.org/x/exp v0.0.0-20250128182459-e0ece0dbea4c // indirect
 	golang.org/x/mod v0.22.0 // indirect
 	golang.org/x/net v0.34.0 // indirect
 	golang.org/x/sync v0.10.0 // indirect
@@ -57,7 +57,7 @@ require (
 
 require (
 	github.com/BurntSushi/toml v1.4.0
-	github.com/WJQSERVER-STUDIO/go-utils/logger v1.1.1
+	github.com/WJQSERVER-STUDIO/go-utils/logger v1.2.0
 	github.com/gin-contrib/cors v1.7.3
 	github.com/gin-contrib/sessions v1.0.2
 	github.com/gin-gonic/gin v1.10.0
