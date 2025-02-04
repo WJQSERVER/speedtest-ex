@@ -1,5 +1,11 @@
 # 更新日志
 
+0.0.11
+---
+- CHANGE: 优化`empty`部分实现
+- CHANGE: 将`logger`升级至`v1.2.0`版本
+- CHANGE: 更新相关依赖库
+
 25w11a
 ---
 - CHANGE: 改进`empty`部分实现
