@@ -199,6 +199,7 @@ func init() {
 	//updateConfig()
 	setupLogger()
 	web.RandomDataInit(cfg)
+	web.InitEmptyBuf()
 }
 
 func main() {
