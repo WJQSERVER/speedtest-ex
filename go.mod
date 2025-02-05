@@ -5,7 +5,7 @@ go 1.23.6
 require (
 	github.com/breml/rootcerts v0.2.20
 	github.com/oklog/ulid/v2 v2.1.0
-	go.etcd.io/bbolt v1.3.11
+	go.etcd.io/bbolt v1.4.0
 )
 
 require (
