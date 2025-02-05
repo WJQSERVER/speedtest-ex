@@ -7,6 +7,10 @@
 - CHANGE: 更新相关依赖库
 - CHANGE: 更新Go版本至1.23.6
 
+25w11b
+---
+- CHANGE: 优化`empty`部分实现
+
 25w11a
 ---
 - CHANGE: 改进`empty`部分实现
