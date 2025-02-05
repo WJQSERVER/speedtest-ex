@@ -5,6 +5,7 @@
 - CHANGE: 优化`empty`部分实现
 - CHANGE: 将`logger`升级至`v1.2.0`版本
 - CHANGE: 更新相关依赖库
+- CHANGE: 更新Go版本至1.23.6
 
 25w11a
 ---
