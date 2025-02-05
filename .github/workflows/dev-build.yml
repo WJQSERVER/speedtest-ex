@@ -17,7 +17,7 @@ jobs:
         goarch: [amd64, arm64]
     env:
       OUTPUT_BINARY: speedtest-ex
-      GO_VERSION: 1.23.5
+      GO_VERSION: 1.23.6
 
     steps:
       - uses: actions/checkout@v4
@@ -54,7 +54,7 @@ jobs:
         run: |    
           tar -czvf ${{ env.OUTPUT_BINARY }}-${{matrix.goos}}-${{matrix.goarch}}.tar.gz ./${{ env.OUTPUT_BINARY }}-${{matrix.goos}}-${{matrix.goarch}}
       - name: Upload to GitHub Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.OUTPUT_BINARY }}
           path: |
