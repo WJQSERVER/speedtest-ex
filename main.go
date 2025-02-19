@@ -36,6 +36,8 @@ var (
 // 日志模块
 var (
 	logw       = logger.Logw
+	LogDump    = logger.LogDump
+	logDebug   = logger.LogDebug
 	logInfo    = logger.LogInfo
 	logWarning = logger.LogWarning
 	logError   = logger.LogError
@@ -167,8 +169,6 @@ func setupLogger() {
 	if err != nil {
 		log.Fatalf("Failed to initialize logger: %v", err)
 	}
-	logw("Logger initialized")
-	logw("Init Completed")
 }
 
 func debugOutput() {
