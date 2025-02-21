@@ -1,5 +1,11 @@
 # 更新日志
 
+0.0.12
+---
+- CHANGE: 关闭Gin上传缓冲区
+- CHANGE: 更新Go版本至1.24
+- CHANGE: 更新相关依赖库
+
 25w12a
 ---
 - CHANGE: 关闭Gin上传缓冲区
