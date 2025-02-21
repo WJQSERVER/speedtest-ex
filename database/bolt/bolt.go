@@ -21,17 +21,19 @@ type Storage struct {
 }
 
 var (
-	logDebug = logger.Logw
-	logInfo  = logger.LogInfo
-	logWarn  = logger.LogWarning
-	logErr   = logger.LogError
+	logw       = logger.Logw
+	LogDump    = logger.LogDump
+	logDebug   = logger.LogDebug
+	logInfo    = logger.LogInfo
+	logWarning = logger.LogWarning
+	logError   = logger.LogError
 )
 
 // OpenDatabase 打开一个 BoltDB 数据库
 func OpenDatabase(dbFilePath string) *Storage {
 	db, err := bbolt.Open(dbFilePath, 0666, nil)
 	if err != nil {
-		logErr("Failed to open BoltDB file: %s", err)
+		logError("Failed to open BoltDB file: %s", err)
 		panic(err) // 直接终止程序，确保问题被及时发现
 	}
 	return &Storage{db: db}
@@ -155,6 +157,8 @@ func (s *Storage) GetAllTelemetry() ([]schema.TelemetryData, error) {
 			record.Jitter,
 			record.Log,
 		)
+		var a int = 1
+		logInfo("A: %d", a)
 	}
 
 	return records, err

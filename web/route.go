@@ -32,8 +32,9 @@ func ListenAndServe(cfg *config.Config, version string) error {
 	router := gin.New()
 	router.UseH2C = true
 	router.Use(gin.Recovery())
+	router.MaxMultipartMemory = 0
 
-	if cfg.Auth.Enable == true {
+	if cfg.Auth.Enable {
 		// 设置 session 中间件
 		store := cookie.NewStore([]byte(cfg.Auth.Secret))
 		store.Options(sessions.Options{
