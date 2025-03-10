@@ -1,7 +1,6 @@
 module speedtest
 
 go 1.24
-
 require (
 	github.com/breml/rootcerts v0.2.20
 	github.com/oklog/ulid/v2 v2.1.0
@@ -9,6 +8,7 @@ require (
 )
 
 require (
+	github.com/WJQSERVER-STUDIO/go-utils/log v0.0.1 // indirect
 	github.com/andybalholm/brotli v1.1.1 // indirect
 	github.com/bytedance/sonic v1.12.9 // indirect
 	github.com/bytedance/sonic/loader v0.2.3 // indirect
@@ -57,7 +57,7 @@ require (
 
 require (
 	github.com/BurntSushi/toml v1.4.0
-	github.com/WJQSERVER-STUDIO/go-utils/logger v1.3.0
+	github.com/WJQSERVER-STUDIO/go-utils/logger v1.5.0
 	github.com/gin-contrib/cors v1.7.3
 	github.com/gin-contrib/sessions v1.0.2
 	github.com/gin-gonic/gin v1.10.0
