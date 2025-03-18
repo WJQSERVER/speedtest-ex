@@ -56,7 +56,7 @@ require (
 )
 
 require (
-	github.com/BurntSushi/toml v1.4.0
+	github.com/BurntSushi/toml v1.5.0
 	github.com/WJQSERVER-STUDIO/go-utils/logger v1.3.0
 	github.com/gin-contrib/cors v1.7.3
 	github.com/gin-contrib/sessions v1.0.2
