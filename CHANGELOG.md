@@ -3,6 +3,12 @@
 1.0.1 - 2025-06-04
 ---
 - CHANGE: 更新依赖
+- CHANGE: 弃用对req的依赖, 转向touka-httpc
+
+25w14b - 2025-06-04
+---
+- PRE-RELEASE: 此版本是v1.0.1的预发布版本; 
+- CHANGE: 弃用对req的依赖, 转向touka-httpc
 
 25w14a - 2025-06-04
 ---

@@ -5,7 +5,7 @@ import (
 	"io"
 	"speedtest/config"
 
-	"github.com/imroc/req/v3"
+	"github.com/WJQSERVER-STUDIO/httpc"
 )
 
 /*
@@ -36,11 +36,14 @@ type CommonIPInfoResponse struct {
 func getHostIPInfo(ip string, cfg *config.Config) (CommonIPInfoResponse, error) {
 	selfhostApi := cfg.IPinfo.IPinfoURL + "/api/ip-lookup?ip=" + ip
 	// 使用req库发送请求并使用chrome的TLS指纹
-	client := req.C().
-		SetTLSFingerprintChrome().
-		ImpersonateChrome()
+	/*
+		client := req.C().
+			SetTLSFingerprintChrome().
+			ImpersonateChrome()
 
-	resp, err := client.R().Get(selfhostApi)
+		resp, err := client.R().Get(selfhostApi)
+	*/
+	resp, err := httpc.New().NewRequestBuilder("GET", selfhostApi).NoDefaultHeaders().SetHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36").Execute()
 	if err != nil {
 		return CommonIPInfoResponse{}, err
 	}
