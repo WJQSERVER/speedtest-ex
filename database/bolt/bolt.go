@@ -7,7 +7,6 @@ import (
 
 	"speedtest/database/schema"
 
-	"github.com/WJQSERVER-STUDIO/go-utils/logger"
 	"go.etcd.io/bbolt"
 )
 
@@ -20,20 +19,10 @@ type Storage struct {
 	db *bbolt.DB
 }
 
-var (
-	logw       = logger.Logw
-	LogDump    = logger.LogDump
-	logDebug   = logger.LogDebug
-	logInfo    = logger.LogInfo
-	logWarning = logger.LogWarning
-	logError   = logger.LogError
-)
-
 // OpenDatabase 打开一个 BoltDB 数据库
 func OpenDatabase(dbFilePath string) *Storage {
 	db, err := bbolt.Open(dbFilePath, 0666, nil)
 	if err != nil {
-		logError("Failed to open BoltDB file: %s", err)
 		panic(err) // 直接终止程序，确保问题被及时发现
 	}
 	return &Storage{db: db}
@@ -140,26 +129,6 @@ func (s *Storage) GetAllTelemetry() ([]schema.TelemetryData, error) {
 
 		return nil
 	})
-
-	// 输出调试日志
-	for _, record := range records {
-		logDebug("Record: UUID: %s, Timestamp: %s, IPAddress: %s, ISPInfo: %s, Extra: %s, UserAgent: %s, Language: %s, Download: %s, Upload: %s, Ping: %s, Jitter: %s, Log: %s",
-			record.UUID,
-			record.Timestamp.Format(time.RFC3339),
-			record.IPAddress,
-			record.ISPInfo,
-			record.Extra,
-			record.UserAgent,
-			record.Language,
-			record.Download,
-			record.Upload,
-			record.Ping,
-			record.Jitter,
-			record.Log,
-		)
-		var a int = 1
-		logInfo("A: %d", a)
-	}
 
 	return records, err
 }

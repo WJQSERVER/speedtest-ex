@@ -1,13 +1,15 @@
 package web
 
 import (
-	"crypto/rand"
+	"context"
+	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"speedtest/config"
 	"strconv"
 
-	"github.com/gin-gonic/gin"
+	"github.com/infinite-iroha/touka"
 )
 
 const (
@@ -25,15 +27,20 @@ var (
 )
 
 // getRandomData 生成指定大小的随机数据块
-func getRandomData(length int) []byte {
-	data := make([]byte, length)
-	_, err := rand.Read(data) // 使用 crypto/rand.Read 获取随机数据，返回读取的字节数和 error
-	if err != nil {
-		logError("Failed to generate random data: %v", err)
-		//  如果随机数据生成失败，返回 nil 或 空 slice，并由调用方处理错误
-		return nil //  返回 nil，表示生成失败
-	}
-	return data
+func getRandomData(size int) ([]byte, error) {
+	randomData = make([]byte, size)
+	/*
+		_, err := rand.Read(randomData) // 使用 crypto/rand.Read
+		if err != nil {
+			//return nil, err
+			panic("Failed to initialize random data pool") // 启动时失败就直接 panic
+		}
+		if len(randomData) != size {
+			logError("getRandomData generated data of size %d, expected %d", len(randomData), size)
+			panic("Failed to initialize random data pool")
+		}
+	*/
+	return randomData[:3600], nil
 }
 
 // RandomDataInit 初始化随机数据块，在程序启动时调用
@@ -48,9 +55,13 @@ func RandomDataInit(cfg *config.Config) {
 		dlChunks = cfg.Speedtest.DownDataChunkCount
 	}
 
-	randomData = getRandomData(dlChunkSize) // 初始化 randomData
-	if randomData == nil {                  // 检查 randomData 是否生成成功
-		logError("Failed to initialize random data. Program cannot continue.")
+	randomData, err := getRandomData(dlChunkSize) // 初始化 randomData
+	if err != nil {
+		fmt.Printf("Failed to initialize random data: %v", err)
+		return
+	}
+	if randomData == nil { // 检查 randomData 是否生成成功
+		fmt.Printf("Failed to initialize random data. Program cannot continue.")
 		//  panic 退出程序，因为依赖的随机数据无法生成
 		panic("Failed to initialize random data. Program cannot continue.")
 	}
@@ -59,11 +70,11 @@ func RandomDataInit(cfg *config.Config) {
 }
 
 // garbage 处理对 /garbage 的请求，返回指定数量的随机数据块
-func garbage(c *gin.Context) {
-	c.Header("Content-Description", "File Transfer")
-	c.Header("Content-Type", "application/octet-stream")
-	c.Header("Content-Disposition", "attachment; filename=random.dat")
-	c.Header("Content-Transfer-Encoding", "binary")
+func garbage(c *touka.Context) {
+	c.SetHeader("Content-Description", "File Transfer")
+	c.SetHeader("Content-Type", "application/octet-stream")
+	c.SetHeader("Content-Disposition", "attachment; filename=random.dat")
+	c.SetHeader("Content-Transfer-Encoding", "binary")
 
 	chunks := dlChunks // 默认 chunk 数量
 
@@ -71,7 +82,7 @@ func garbage(c *gin.Context) {
 	if ckSizeStr != "" {
 		ckSize, err := strconv.ParseInt(ckSizeStr, 10, 64)
 		if err != nil {
-			c.String(http.StatusBadRequest, "Invalid ckSize parameter: "+err.Error()) // 返回 400 错误，告知客户端参数错误和具体错误信息
+			c.String(http.StatusBadRequest, "%s", "Invalid ckSize parameter: "+err.Error()) // 返回 400 错误，告知客户端参数错误和具体错误信息
 			return
 		}
 
@@ -87,16 +98,80 @@ func garbage(c *gin.Context) {
 
 	//  检查 randomData 是否为空，防止在初始化失败的情况下继续运行
 	if randomData == nil {
-		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("random data not initialized")) // 返回 500 错误
+		//c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("random data not initialized")) // 返回 500 错误
+		c.AbortWithStatus(http.StatusInternalServerError) // 返回 500 错误
 		return
 	}
+	/*
 
-	// 发送随机数据块
+		// 发送随机数据块
+		for i := 0; i < chunks; i++ {
+			_, err := c.Writer.Write(randomData)
+			c.Writer.Flush() // 刷新缓冲区
+			if err != nil {
+				//c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("failed to write chunk %d: %w", i, err)) // 包含 chunk 索引，方便调试
+				c.AbortWithStatus(http.StatusInternalServerError) // 返回 500 错误
+				return
+			}
+		}
+	*/
+
+	//使用io.Writer
+
+	//writer := NewSafeResponseWriter(c.Writer)
+
+	writer := c.Writer
 	for i := 0; i < chunks; i++ {
-		_, err := c.Writer.Write(randomData)
+		_, err := writer.Write(randomData)
 		if err != nil {
-			c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("failed to write chunk %d: %w", i, err)) // 包含 chunk 索引，方便调试
+			// 检查是否是客户端断开连接导致的错误
+			if err == http.ErrAbortHandler {
+				c.Warnf("Client disconnected while writing garbage data")
+				return // 客户端断开连接，直接返回
+			}
+			c.Errorf("Failed to write chunk %d: %v", i, err)
+			//c.AbortWithStatus(http.StatusInternalServerError) // 返回 500 错误
+			return // 写入失败，直接返回
+		}
+
+		writer.Flush()
+
+		//time.Sleep(10 * time.Millisecond)
+	}
+
+	//safeWriter := NewSafeResponseWriter(c.Writer)
+	//dataReader := dataGeneratorReader(c.Request.Context(), chunks)
+	//c.WriteStream(dataReader)
+	//copyb.Copy(safeWriter, dataReader)
+}
+
+func dataGeneratorReader(ctx context.Context, chunks int) io.Reader {
+	reader, writer := io.Pipe()
+
+	go func() {
+		defer writer.Close()
+
+		if randomData == nil {
+			writer.CloseWithError(errors.New("server data not ready"))
 			return
 		}
-	}
+
+		for i := 0; i < chunks; i++ {
+			select {
+			case <-ctx.Done():
+				writer.CloseWithError(ctx.Err())
+				return
+			default:
+			}
+
+			// 高效地写入共享的、只读的 randomData
+			_, err := writer.Write(randomData)
+			if err != nil {
+				// 意味着 reader 端已关闭，这是正常的结束方式之一
+				return
+			}
+		}
+	}()
+
+	return reader
 }

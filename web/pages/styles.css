@@ -1,208 +1,216 @@
-body,
-html {
+/* styles.css - Common styles for all pages */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
     margin: 0;
-    padding: 0;
-    font-family: sans-serif;
-    background-color: #ebebeb;
-    /* 更现代的浅灰背景 */
-    color: #333;
+    background-color: var(--theme-background);
+    color: var(--theme-text-default);
+    line-height: 1.6;
+    padding: 20px;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.container {
-    max-width: 1200px;
-    margin: 2.5% auto;
-    padding: 20px;
-    background: rgba(240, 240, 240, 0.9);
-    /* 半透明白色背景 */
-    border-radius: 20px;
-    /* 圆角 */
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-    /* 柔和阴影 */
+.container { /* General container for index, login */
+    background: var(--theme-surface);
+    border-radius: 16px;
+    box-shadow: 0 6px 20px var(--theme-shadow-strong);
+    padding: 30px; /* Default padding */
+    width: 100%;
+    max-width: 600px; /* Default max-width */
+    margin: 20px auto;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 h1 {
+    color: var(--theme-primary);
+    margin-bottom: 25px;
+    font-size: 2rem;
+    font-weight: 600;
     text-align: center;
-    color: #075199;
-    margin-bottom: 30px;
-    font-size: 28px;
 }
 
-#startStopBtn {
-    display: block;
-    width: 200px;
-    height: 50px;
-    margin: 0 auto 30px;
-    background-color: #0050a5;
-    color: white;
-    border: none;
+/* Buttons (shared styles) */
+.button, .start-stop-button, .back-home-button, .btn-primary /* Bootstrap button */ {
+    background-color: var(--theme-primary) !important;
+    color: var(--theme-text-on-primary) !important;
+    border: 1px solid var(--theme-primary) !important;
+    padding: 10px 20px;
     border-radius: 25px;
-    font-size: 18px;
-    font-weight: bold;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    /* 按钮阴影 */
-}
-
-#startStopBtn:hover {
-    background-color: #8caec6;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-    /* 按钮悬停阴影 */
-}
-
-#startStopBtn.running {
-    background-color: #ff4d4f;
-}
-
-#startStopBtn.running:hover {
-    background-color: #ff7875;
-}
-
-.test-area {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    margin-bottom: 30px;
-    gap: 20px;
-    /* 增加间距 */
-}
-
-.test-box {
-    background-color: rgba(255, 255, 255, 0.8);
-    /* 半透明效果 */
-    border-radius: 15px;
-    /* 圆角 */
-    padding: 20px;
-    margin: 10px;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    /* 柔和阴影 */
-    flex: 1 1 200px;
-    max-width: 220px;
-    /* 限制宽度 */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    /* 添加交互动画 */
-}
-
-.test-box:hover {
-    transform: translateY(-5px);
-    /* 悬浮效果 */
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-.test-name {
-    font-size: 18px;
-    margin-bottom: 10px;
-    color: #075199;
-    font-weight: bold;
-}
-
-.meter-text {
-    font-size: 28px;
-    font-weight: bold;
-    margin: 10px 0;
-    color: #333;
-}
-
-.unit {
-    font-size: 14px;
-    color: #888;
-}
-
-#ipArea {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 14px;
-    color: #888;
-}
-
-#privacyPolicy {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.8);
-    z-index: 1000;
-    overflow-y: auto;
-}
-
-.privacy-content {
-    background-color: white;
-    margin: 50px auto;
-    padding: 20px;
-    max-width: 600px;
-    border-radius: 20px;
-    /* 圆角 */
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    /* 阴影 */
-}
-
-.privacy-link {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.privacy-link a {
-    color: #1890ff;
+    font-size: 0.95rem;
+    font-weight: 500;
     text-decoration: none;
-    font-weight: bold;
-}
-
-.privacy-link a:hover {
-    text-decoration: underline;
-}
-
-#jump-button {
     display: inline-block;
-    padding: 5px 10px;
-    /* 减小内边距 */
-    font-size: 14px;
-    /* 调整字体大小 */
-    color: white;
-    background-color: #0050a5;
-    border: none;
-    border-radius: 15px;
-    /* 圆角 */
-    text-decoration: none;
     text-align: center;
-    transition: background-color 0.3s, transform 0.3s;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, transform 0.1s ease;
 }
-
-#jump-button:hover {
-    background-color: #007bff;
+.button:hover, .start-stop-button:hover, .back-home-button:hover, .btn-primary:hover {
+    background-color: var(--theme-primary-hover) !important;
+    border-color: var(--theme-primary-hover) !important;
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+.button.secondary, .btn-secondary {
+    background-color: var(--theme-secondary) !important;
+    border-color: var(--theme-secondary) !important;
+    color: var(--theme-text-on-secondary) !important;
+}
+.button.secondary:hover, .btn-secondary:hover {
+    background-color: var(--theme-secondary-hover) !important;
+    border-color: var(--theme-secondary-hover) !important;
+}
+.start-stop-button.running { background-color: #dc3545 !important; border-color: #dc3545 !important; }
+.start-stop-button.running:hover { background-color: #c82333 !important; border-color: #c82333 !important; }
+
+
+/* --- Chart Page Specific --- */
+body[data-page="chart"] .container {
+    max-width: 1200px;
+    background: transparent;
+    box-shadow: none;
+    padding: 0 15px;
+}
+.header-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding: 15px 20px;
+    background-color: var(--theme-surface); /* Changed from --header-controls-bg */
+    border-radius: 12px;
+    box-shadow: 0 4px 12px var(--theme-shadow-light);
+}
+.unit-switcher label, .unit-switcher-main label {
+    font-size: 0.9rem;
+    color: var(--theme-text-muted);
+    margin-right: 8px;
+}
+.unit-switcher select, .unit-switcher-main select {
+    padding: 8px 12px; border-radius: 6px; border: 1px solid var(--theme-border);
+    background-color: var(--theme-input-bg); color: var(--theme-input-text);
+    font-size: 0.9rem; cursor: pointer;
+}
+.info-panel, .chart-wrapper {
+    background: var(--theme-surface); border-radius: 12px;
+    padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 12px var(--theme-shadow-light);
+}
+.info-title, .chart-title {
+    font-size: 1.2rem; font-weight: 600; color: var(--theme-text-strong);
+    margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--theme-border);
+}
+.info-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px; }
+.info-item div { margin-bottom: 8px; font-size: 0.95rem; color: var(--theme-text-default); }
+.info-item span { font-weight: 600; color: var(--theme-primary); }
+.info-item #latest-isp { color: var(--theme-text-default); }
+canvas { max-height: 400px; }
+.loader { text-align: center; padding: 40px; font-size: 1.1rem; color: var(--theme-text-muted); }
+.error-message {
+    text-align: center; padding: 20px; color: #dc3545;
+    background-color: color-mix(in srgb, #dc3545 15%, transparent);
+    border: 1px solid color-mix(in srgb, #dc3545 30%, transparent);
+    border-radius: 8px;
 }
 
-button {
-    font-family: sans-serif;
+/* --- Index/Single Page Specific --- */
+body[data-page="main-speedtest"] .container,
+body[data-page="single-speedtest"] .container {
+    padding-top: 30px; padding-bottom: 30px; text-align: center;
 }
+body[data-page="main-speedtest"] h1, body[data-page="single-speedtest"] h1 {
+    font-size: 2rem;
+}
+.start-stop-button { /* This is used by index/single */
+    padding: 12px 30px; font-size: 1.1rem; margin: 0 auto 30px auto; display: block; min-width: 180px;
+}
+.test-area { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 20px; margin-bottom: 30px; }
+.test-box {
+    background-color: var(--theme-surface-alt); border-radius: 12px;
+    padding: 20px 15px; box-shadow: 0 2px 6px var(--theme-shadow-light);
+}
+.test-name { font-size: 0.85rem; color: var(--theme-text-muted); margin-bottom: 8px; font-weight: 500; }
+.meter-text { font-size: 1.8rem; font-weight: 700; color: var(--theme-primary); line-height: 1.2; }
+.meter-text.sub { color: var(--theme-secondary); font-size: 1.6rem; }
+.unit { font-size: 0.8rem; color: var(--theme-text-muted); }
+.ip-area { margin-bottom: 25px; font-size: 0.9rem; color: var(--theme-text-muted); }
+.ip-area strong { color: var(--theme-text-strong); }
+.controls-area { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-bottom: 25px; }
+.link-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 10px; }
+.link-button {
+    padding: 8px 18px; font-size: 0.85rem; color: var(--theme-link);
+    background-color: transparent; border: 1px solid var(--theme-link);
+    border-radius: 20px; text-decoration: none; transition: all 0.2s ease;
+}
+.link-button:hover { background-color: var(--theme-link); color: var(--theme-text-on-primary); }
+.rev-ping-area { font-size: 0.9rem; color: var(--theme-text-muted); }
+.rev-ping-area strong { color: var(--theme-text-strong); }
 
+/* --- Login Page Specific --- */
+body[data-page="login"] {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh;
+}
+body[data-page="login"] .container { max-width: 420px; margin-top: -5vh; }
+.login-app-title {
+    text-align: center; color: var(--theme-primary); margin-bottom: 25px;
+    font-size: 1.8rem; font-weight: 600;
+}
+body[data-page="login"] .card { /* Bootstrap card uses --bs-card-bg from :root */
+    border-radius: 12px; /* Custom radius */
+    box-shadow: 0 6px 20px var(--theme-shadow-strong);
+}
+body[data-page="login"] .card-header { /* Uses --bs-card-cap-bg, --bs-border-color, --bs-body-color */
+    padding: 1.25rem 1.5rem; font-size: 1.2rem; font-weight: 500; text-align: center;
+}
+body[data-page="login"] .card-body { padding: 1.5rem 2rem; }
+.form-label { /* Bootstrap label, uses general text colors */
+    font-weight: 500; margin-bottom: 0.3rem; color: var(--theme-text-muted); font-size: 0.9rem;
+}
+/* .form-control and .btn-primary will use --bs-* variables defined in :root */
+body[data-page="login"] .btn-primary { width: 100%; }
+
+
+/* Version Badge (common) */
 .version-badge {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #39c5bb;
-    color: white;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease-in-out;
+    position: fixed; bottom: 15px; right: 15px;
+    background-color: var(--theme-secondary); /* Default to secondary */
+    color: var(--theme-text-on-secondary);
+    padding: 5px 10px; border-radius: 15px; font-size: 0.75rem; opacity: 0.9;
+    box-shadow: 0 2px 6px var(--theme-shadow-light);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.version-badge:hover {
-    background-color: #39c5bc9f;
+/* Toast (Bootstrap override for dark/light mode from variables) */
+.toast-container .toast {
+    background-color: var(--bs-toast-bg); /* Uses BS var which is our theme var */
+    color: var(--bs-toast-color);
+    border: 1px solid var(--bs-toast-border-color);
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem var(--theme-shadow-strong);
+}
+.toast-container .toast .toast-header {
+    background-color: var(--bs-toast-header-bg);
+    color: var(--bs-toast-header-color);
+    border-bottom: 1px solid var(--bs-toast-border-color);
+}
+.toast-container .toast .btn-close {
+    filter: var(--toast-btn-close-filter); /* Uses variable for filter */
+}
+/* Contextual toasts need to use the mixed colors for better visibility */
+.toast.text-bg-success {
+    background-color: color-mix(in srgb, var(--toast-success-bg-mix) 90%, var(--bs-toast-bg)) !important;
+    color: var(--theme-text-strong) !important; /* Ensure high contrast text */
+}
+.toast.text-bg-danger {
+    background-color: color-mix(in srgb, var(--toast-danger-bg-mix) 90%, var(--bs-toast-bg)) !important;
+    color: var(--theme-text-strong) !important;
 }
 
+
+/* Footer (common) */
 footer {
-    line-height: 1.25;
-    text-align: center;
-    font-size: 1rem;
-    padding: 10px 0;
-    /* 添加一些内边距 */
-
+    width: 100%; text-align: center; font-size: 0.85rem;
+    color: var(--theme-text-muted); padding: 20px 0 10px 0;
+    margin-top: auto;
+    border-top: 1px solid var(--theme-border);
+    transition: color 0.3s ease, border-color 0.3s ease;
 }
+footer a { color: var(--theme-link); text-decoration: none; }
+footer a:hover { text-decoration: underline; }

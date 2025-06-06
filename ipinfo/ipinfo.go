@@ -63,7 +63,6 @@ func getIPInfoIO(ip string, cfg *config.Config) (CommonIPInfoResponse, error) {
 
 	// 处理非200状态码
 	if resp.StatusCode != 200 {
-		logWarning("ipinfo.io API返回状态码：%s", resp.StatusCode)
 		return CommonIPInfoResponse{}, err
 	}
 

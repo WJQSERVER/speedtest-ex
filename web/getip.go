@@ -6,7 +6,7 @@ import (
 	"speedtest/ipinfo"
 	"speedtest/results"
 
-	"github.com/gin-gonic/gin"
+	"github.com/infinite-iroha/touka"
 )
 
 // 预编译的正则表达式变量
@@ -24,10 +24,15 @@ var (
 	removeASRegexp          = regexp.MustCompile(`AS\d+\s`)                          // 用于去除 ISP 信息中的自治系统编号
 )
 
-func getIP(c *gin.Context, cfg *config.Config) {
+func getIP(c *touka.Context, cfg *config.Config) {
 	clientIP := c.ClientIP() // 获取客户端 IP 地址
 	// clientIP := "1.1.1.1"  // for debug
 	var ret results.Result // 创建结果结构体实例
-	ret = ipinfo.GetIP(clientIP, cfg)
+	ret, err := ipinfo.GetIP(clientIP, cfg)
+	if err != nil {
+		c.Errorf("Error getting IP info: %s", err)
+		c.JSON(500, touka.H{"error": "Failed to get IP info"}) // 返回错误响应
+		return
+	}
 	c.JSON(200, ret) // 返回 JSON 响应
 }

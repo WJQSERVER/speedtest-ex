@@ -2,37 +2,56 @@ package web
 
 import (
 	"fmt"
-	"io"
+	"net/http"
 	"regexp"
 	"speedtest/config"
 	"speedtest/database"
 	"speedtest/results"
+	"time"
 
-	"github.com/WJQSERVER-STUDIO/go-utils/logger"
-	"github.com/gin-contrib/cors"
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-contrib/sessions/cookie"
-	"github.com/gin-gonic/gin"
-)
+	"github.com/fenthope/cors"
+	"github.com/fenthope/reco"
+	"github.com/fenthope/record"
+	"github.com/fenthope/sessions"
+	"github.com/fenthope/sessions/cookie"
 
-var (
-	logw       = logger.Logw
-	logInfo    = logger.LogInfo
-	logWarning = logger.LogWarning
-	logError   = logger.LogError
+	"github.com/infinite-iroha/touka"
 )
 
 var pagesPathRegex = regexp.MustCompile(`^[\w/]+$`)
 
 // ListenAndServe 启动HTTP服务器并设置路由处理程序
 func ListenAndServe(cfg *config.Config, version string) error {
-	// gin.SetMode(gin.DebugMode)
-	gin.SetMode(gin.ReleaseMode)
-	gin.LoggerWithWriter(io.Discard)
-	router := gin.New()
-	router.UseH2C = true
-	router.Use(gin.Recovery())
-	router.MaxMultipartMemory = 0
+	router := touka.New()
+	router.Use(touka.Recovery())
+	router.Use(record.Middleware())
+	var (
+		logPath string
+		logSize int
+	)
+	if cfg.Log.LogFilePath != "" {
+		logPath = cfg.Log.LogFilePath
+	} else {
+		logPath = "speedtest-ex.log"
+	}
+	if cfg.Log.MaxLogSize != 0 {
+		logSize = cfg.Log.MaxLogSize
+	} else {
+		logSize = 5
+	}
+
+	router.SetLogger(reco.Config{
+		Level:           reco.LevelInfo,
+		Mode:            reco.ModeText,
+		TimeFormat:      time.RFC3339,
+		FilePath:        logPath,
+		EnableRotation:  true,
+		MaxFileSizeMB:   int64(logSize),
+		MaxBackups:      5,
+		CompressBackups: true,
+		Async:           true,
+		DefaultFields:   nil,
+	})
 
 	if cfg.Auth.Enable {
 		// 设置 session 中间件
@@ -49,6 +68,7 @@ func ListenAndServe(cfg *config.Config, version string) error {
 	}
 
 	// CORS
+
 	router.Use(cors.New(cors.Config{
 		AllowAllOrigins: true,
 		AllowMethods:    []string{"GET", "POST", "OPTIONS", "HEAD"},
@@ -57,95 +77,95 @@ func ListenAndServe(cfg *config.Config, version string) error {
 
 	if cfg.Auth.Enable {
 		// 添加登录路由
-		router.POST("/api/login", func(c *gin.Context) {
+		router.POST("/api/login", func(c *touka.Context) {
 			AuthLogin(c, cfg)
 		})
 
 		// 添加登出路由
-		router.GET("/api/logout", func(c *gin.Context) {
+		router.GET("/api/logout", func(c *touka.Context) {
 			AuthLogout(c)
 		})
 	}
 
 	// 版本信息接口
-	router.GET("/api/version", func(c *gin.Context) {
-		c.JSON(200, gin.H{
+	router.GET("/api/version", func(c *touka.Context) {
+		c.JSON(200, touka.H{
 			"Version": version,
 		})
 	})
 
 	backendUrl := "/backend"
 	// 记录遥测数据
-	router.POST(backendUrl+"/results/telemetry", func(c *gin.Context) {
+	router.POST(backendUrl+"/results/telemetry", func(c *touka.Context) {
 		results.Record(c, cfg)
 	})
 	// 获取客户端 IP 地址
-	router.GET(backendUrl+"/getIP", func(c *gin.Context) {
+	router.GET(backendUrl+"/getIP", func(c *touka.Context) {
 		getIP(c, cfg)
 	})
 	// 垃圾数据接口
 	router.GET(backendUrl+"/garbage", garbage)
 	// 空接口
-	router.Any(backendUrl+"/empty", empty)
+	router.ANY(backendUrl+"/empty", empty)
 	// 获取图表数据
-	router.GET(backendUrl+"/api/chart-data", func(c *gin.Context) {
+	router.GET(backendUrl+"/api/chart-data", func(c *touka.Context) {
 		GetChartData(database.DB, cfg, c)
 	})
 	// 反向ping
 	/*
-		router.GET(backendUrl+"/revping", func(c *gin.Context) {
+		router.GET(backendUrl+"/revping", func(c *touka.Context) {
 			pingIP(c, cfg)
 		})
 	*/
 
 	basePath := cfg.Server.BasePath
 	// 记录遥测数据
-	router.POST(basePath+"/results/telemetry", func(c *gin.Context) {
+	router.POST(basePath+"/results/telemetry", func(c *touka.Context) {
 		results.Record(c, cfg)
 	})
 	// 获取客户端 IP 地址
-	router.GET(basePath+"/getIP", func(c *gin.Context) {
+	router.GET(basePath+"/getIP", func(c *touka.Context) {
 		getIP(c, cfg)
 	})
 	// 垃圾数据接口
 	router.GET(basePath+"/garbage", garbage)
 	// 空接口
-	router.Any(basePath+"/empty", empty)
+	router.ANY(basePath+"/empty", empty)
 	// 获取图表数据
-	router.GET(basePath+"/api/chart-data", func(c *gin.Context) {
+	router.GET(basePath+"/api/chart-data", func(c *touka.Context) {
 		GetChartData(database.DB, cfg, c)
 	})
 	// 反向ping
 	/*
-		router.GET(basePath+"/revping", func(c *gin.Context) {
+		router.GET(basePath+"/revping", func(c *touka.Context) {
 			pingIP(c, cfg)
 		})
 	*/
 	// 反向ping ws
-	router.GET(basePath+"/ws", func(c *gin.Context) {
+	router.GET(basePath+"/ws", func(c *touka.Context) {
 		handleWebSocket(c, cfg)
 	})
 
 	// PHP 前端默认值兼容性
-	router.Any(basePath+"/empty.php", empty)
+	router.ANY(basePath+"/empty.php", empty)
 	router.GET(basePath+"/garbage.php", garbage)
-	router.GET(basePath+"/getIP.php", func(c *gin.Context) {
+	router.GET(basePath+"/getIP.php", func(c *touka.Context) {
 		getIP(c, cfg)
 	})
-	router.POST(basePath+"/results/telemetry.php", func(c *gin.Context) {
+	router.POST(basePath+"/results/telemetry.php", func(c *touka.Context) {
 		results.Record(c, cfg)
 	})
 
 	//router.NoRoute(gin.WrapH(http.FileServer(http.FS(pages))))
 	// 处理所有请求
-	router.NoRoute(func(c *gin.Context) {
-		PagesEmbedFS(c)
-	})
-
+	//router.NoRoute(func(c *touka.Context) {
+	//	PagesEmbedFS(c)
+	//})
+	router.SetUnMatchFS(http.FS(pages))
 	return StartServer(cfg, router)
 }
 
-func StartServer(cfg *config.Config, r *gin.Engine) error {
+func StartServer(cfg *config.Config, r *touka.Engine) error {
 	addr := cfg.Server.Host
 
 	if addr == "" {

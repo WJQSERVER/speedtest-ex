@@ -2,68 +2,238 @@
 <html lang="zh-CN">
 
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no" />
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no, user-scalable=no">
+    <title>SpeedTest-EX 网络测速 (多线程)</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <title>SpeedTest-EX</title>
-    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <link rel="stylesheet" href="theme-variables.css">
+    <link rel="stylesheet" type="text/css" href="styles.css">
     <script type="text/javascript" src="speedtest.js"></script>
-    <script type="text/javascript" src="script.js"></script>
 </head>
 
-<body>
+<body data-page="main-speedtest">
     <div class="container">
-        <h1>SpeedTest-EX</h1>
-        <button id="startStopBtn"></button>
+        <h1>SpeedTest-EX <span style="font-size: 0.6em; color: var(--theme-text-muted);">(多线程)</span></h1>
+        <button id="startStopButton" class="start-stop-button">开始测速</button>
+
         <div class="test-area">
             <div class="test-box">
                 <div class="test-name">下载速度</div>
-                <div id="dlText" class="meter-text"></div>
-                <div class="unit">Mbps</div>
+                <div id="downloadText" class="meter-text">-</div>
+                <div class="unit data-unit">Mbps</div>
             </div>
             <div class="test-box">
                 <div class="test-name">上传速度</div>
-                <div id="ulText" class="meter-text"></div>
-                <div class="unit">Mbps</div>
+                <div id="uploadText" class="meter-text">-</div>
+                <div class="unit data-unit">Mbps</div>
             </div>
             <div class="test-box">
                 <div class="test-name">Ping</div>
-                <div id="pingText" class="meter-text"></div>
+                <div id="pingText" class="meter-text sub">-</div>
                 <div class="unit">ms</div>
             </div>
             <div class="test-box">
                 <div class="test-name">抖动</div>
-                <div id="jitText" class="meter-text"></div>
+                <div id="jitterText" class="meter-text sub">-</div>
                 <div class="unit">ms</div>
             </div>
         </div>
-        <div id="ipArea">
-            <span id="ip"></span>
-        </div>
-        <div style="text-align: center; margin-top: 20px;">
-            <a href="/single" id="jump-button">单下载流</a>
-            <a href="/chart" id="jump-button">查看图表</a>
-            <!-- <a href="/chart.html" style="font-size: 14px; color: #075199; text-decoration: none;">查看图表</a> -->
-            <div>反向ICMP Ping: <span id="pingValue">-</span> ms</div>
+
+        <div id="ipAddressArea" class="ip-area">
+            您的IP: <strong id="ipAddress">获取中...</strong>
         </div>
 
+        <div class="controls-area">
+            <div class="unit-switcher-main">
+                <label for="mainUnitSelector">速度单位:</label>
+                <select id="mainUnitSelector">
+                    <option value="Mbps" selected>Mbps</option>
+                    <option value="MB/s">MB/s</option>
+                </select>
+            </div>
+            <div class="link-buttons">
+                <a href="single.html" class="link-button">切换到单线程模式</a>
+                <a href="chart.html" class="link-button">查看历史图表</a>
+            </div>
+            <div class="rev-ping-area">
+                反向 Ping: <strong id="reversePingValue">-</strong> ms
+            </div>
+        </div>
     </div>
-    <div id="versionBadge" class="version-badge"></div>
+
+    <div id="versionInfoBadge" class="version-badge">版本加载中...</div>
+
+    <footer>
+        <p>
+            Copyright © <span id="currentYear"></span> WJQSERVER<br>
+            <a href="https://github.com/WJQSERVER/speedtest-ex" target="_blank" rel="noopener noreferrer">GitHub:
+                WJQSERVER/speedtest-ex</a>
+        </p>
+    </footer>
 
     <script>
-        function I(i) { return document.getElementById(i); }
-        var s = new Speedtest();
-        I("startStopBtn").onclick = startStop;
-        s.setParameter("telemetry_level", "basic");
+        document.addEventListener('DOMContentLoaded', () => {
+            const speedTester = new Speedtest();
+            const defaultServer = {
+                name: "Default Server",
+                server: "",
+                dlURL: "backend/garbage",
+                ulURL: "backend/empty",
+                pingURL: "backend/empty",
+                getIpURL: "backend/getIP"
+            };
+            speedTester.setSelectedServer(defaultServer);
+            speedTester.setParameter("xhr_ul_blob_megabytes", 50);
 
+            const elements = {
+                startButton: document.getElementById('startStopButton'),
+                downloadDisplay: document.getElementById('downloadText'),
+                uploadDisplay: document.getElementById('uploadText'),
+                pingDisplay: document.getElementById('pingText'),
+                jitterDisplay: document.getElementById('jitterText'),
+                ipDisplay: document.getElementById('ipAddress'),
+                reversePingDisplay: document.getElementById('reversePingValue'),
+                versionBadge: document.getElementById('versionInfoBadge'),
+                unitSelector: document.getElementById('mainUnitSelector'),
+                dataUnitSpans: document.querySelectorAll('.data-unit'),
+                currentYearSpan: document.getElementById('currentYear'),
+            };
 
+            let currentSpeedUnit = 'Mbps';
+
+            if (elements.currentYearSpan) {
+                elements.currentYearSpan.textContent = new Date().getFullYear();
+            }
+
+            const convertSpeedDisplay = (mbpsValue, unit) => {
+                if (mbpsValue === null || typeof mbpsValue === 'undefined' || mbpsValue === "" || isNaN(parseFloat(mbpsValue))) return "-";
+                const numMbps = parseFloat(mbpsValue);
+                if (unit === 'MB/s') return (numMbps / 8).toFixed(2);
+                return numMbps.toFixed(2);
+            };
+
+            const updateUI = (data) => {
+                if (!data) return;
+                elements.ipDisplay.textContent = data.clientIp || 'N/A';
+                elements.downloadDisplay.textContent = (data.testState === 1 && data.dlStatus === "0.00") ? "..." : convertSpeedDisplay(data.dlStatus, currentSpeedUnit);
+                elements.uploadDisplay.textContent = (data.testState === 3 && data.ulStatus === "0.00") ? "..." : convertSpeedDisplay(data.ulStatus, currentSpeedUnit);
+                elements.pingDisplay.textContent = data.pingStatus || "-";
+                elements.jitterDisplay.textContent = data.jitterStatus || "-";
+                elements.dataUnitSpans.forEach(span => span.textContent = currentSpeedUnit);
+            };
+
+            const resetUI = () => {
+                elements.downloadDisplay.textContent = "-";
+                elements.uploadDisplay.textContent = "-";
+                elements.pingDisplay.textContent = "-";
+                elements.jitterDisplay.textContent = "-";
+                elements.ipDisplay.textContent = "获取中...";
+                elements.startButton.textContent = "开始测速";
+                elements.startButton.classList.remove('running');
+                elements.dataUnitSpans.forEach(span => span.textContent = currentSpeedUnit);
+            };
+
+            const handleStartStop = () => {
+                if (speedTester.getStatus() === 3) {
+                    speedTester.abort();
+                } else {
+                    elements.startButton.textContent = "测试中...";
+                    elements.startButton.classList.add('running');
+                    // 多线程模式，使用 worker 的默认流数量或在这里显式设置
+                    // 使用改进后的驼峰参数名 (假设speedtest.js的setParameter已做映射)
+                    // speedTester.setParameter("downloadStreams", 6); 
+                    // speedTester.setParameter("uploadStreams", 3);
+                    speedTester.start();
+                }
+            };
+
+            speedTester.onupdate = updateUI;
+            speedTester.onend = (aborted) => {
+                elements.startButton.textContent = "开始测速";
+                elements.startButton.classList.remove('running');
+                if (aborted) {
+                    console.log("测试已中止 (index.html)");
+                }
+            };
+
+            speedTester.setParameter("telemetry_level", "basic"); // 驼峰式键名传递
+
+            elements.startButton.addEventListener('click', handleStartStop);
+            elements.unitSelector.addEventListener('change', (event) => {
+                currentSpeedUnit = event.target.value;
+                const lastData = speedTester.getResult();
+                if (lastData) {
+                    updateUI(lastData);
+                } else {
+                    elements.dataUnitSpans.forEach(span => span.textContent = currentSpeedUnit);
+                    // Manually update displayed values if they are numbers
+                    const dlCurrentText = elements.downloadDisplay.textContent;
+                    const ulCurrentText = elements.uploadDisplay.textContent;
+                    if (dlCurrentText !== '-' && dlCurrentText !== "..." && !isNaN(parseFloat(dlCurrentText))) {
+                        elements.downloadDisplay.textContent = convertSpeedDisplay(parseFloat(dlCurrentText) * (currentSpeedUnit === 'Mbps' ? 1 : 8), currentSpeedUnit); // Re-convert logic is tricky here, simpler to just re-apply unit
+                    }
+                    if (ulCurrentText !== '-' && ulCurrentText !== "..." && !isNaN(parseFloat(ulCurrentText))) {
+                        elements.uploadDisplay.textContent = convertSpeedDisplay(parseFloat(ulCurrentText) * (currentSpeedUnit === 'Mbps' ? 1 : 8), currentSpeedUnit);
+                    }
+                }
+            });
+
+            let ws;
+            let wsTimeoutCount = 0;
+            const MAX_WS_TIMEOUTS = 5;
+            function setupWebSocket() {
+                const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                const wsUrl = `${protocol}//${window.location.host}/ws`;
+                if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) {
+                    ws.close(1000, "Reconnecting");
+                }
+                ws = new WebSocket(wsUrl);
+                ws.onopen = () => { console.log('反向 Ping WebSocket 已连接 (index.html)'); wsTimeoutCount = 0; elements.reversePingDisplay.textContent = '连接中...'; };
+                ws.onmessage = (event) => {
+                    try {
+                        const data = JSON.parse(event.data);
+                        if (elements.reversePingDisplay) {
+                            if (data.success && typeof data.rtt === 'number') {
+                                elements.reversePingDisplay.textContent = data.rtt.toFixed(2);
+                                wsTimeoutCount = 0;
+                            } else {
+                                elements.reversePingDisplay.textContent = '-';
+                                if (data.error === "timeout" || data.error === "revping-not-online") {
+                                    wsTimeoutCount++;
+                                    if (wsTimeoutCount >= MAX_WS_TIMEOUTS) {
+                                        console.warn(`反向 Ping: ${MAX_WS_TIMEOUTS} 次超时，关闭 WebSocket。`);
+                                        ws.close(1000, "Too many timeouts");
+                                    }
+                                } else { wsTimeoutCount = 0; console.warn(`反向 Ping 错误: ${data.error}`); }
+                            }
+                        }
+                    } catch (e) { console.error('解析 WS 消息失败:', e, '原始数据:', event.data); if (elements.reversePingDisplay) elements.reversePingDisplay.textContent = '数据错误'; }
+                };
+                ws.onerror = (errorEvent) => { console.error('WebSocket 错误 (index.html):', errorEvent); if (elements.reversePingDisplay) elements.reversePingDisplay.textContent = '连接错误'; };
+                ws.onclose = (event) => {
+                    console.log(`WebSocket 已关闭 (index.html) (代码: ${event.code}, 原因: '${event.reason || 'N/A'}', 是否正常: ${event.wasClean})`);
+                    if (elements.reversePingDisplay) elements.reversePingDisplay.textContent = '-';
+                    if (event.code !== 1000 && wsTimeoutCount < MAX_WS_TIMEOUTS && event.code !== 1005) {
+                        console.log('WebSocket 将在5秒后尝试重连 (index.html)...');
+                        setTimeout(setupWebSocket, 5000);
+                    } else if (wsTimeoutCount >= MAX_WS_TIMEOUTS) { console.log("已达到最大 WebSocket 超时次数，不再重连 (index.html)。"); }
+                };
+            }
+
+            async function fetchServerVersion() {
+                try {
+                    const response = await fetch('/api/version');
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    const data = await response.json();
+                    elements.versionBadge.textContent = `版本: ${data.Version || 'N/A'}`;
+                } catch (error) { console.error('获取服务器版本失败 (index.html):', error); elements.versionBadge.textContent = '版本: 获取失败'; }
+            }
+
+            resetUI();
+            fetchServerVersion();
+            setupWebSocket();
+        });
     </script>
 </body>
-<footer>
-    <p>
-        Copyright &copy; 2025 WJQSERVER<br>
-        GitHub仓库地址：<a href="https://github.com/WJQSERVER/speedtest-ex">WJQSERVER/speedtest-ex</a>
-    </p>
-</footer>
 
 </html>

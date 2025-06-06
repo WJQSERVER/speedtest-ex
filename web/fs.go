@@ -2,17 +2,17 @@ package web
 
 import (
 	"embed"
+	"fmt"
 	"io/fs"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
+	"github.com/infinite-iroha/touka"
 )
-
-var pages fs.FS
 
 var (
 	//go:embed pages/*
 	assetsFS embed.FS
+	pages    fs.FS
 )
 
 func init() {
@@ -20,11 +20,11 @@ func init() {
 	var err error
 	pages, err = fs.Sub(assetsFS, "pages")
 	if err != nil {
-		logError("Failed when processing pages: %s", err)
+		fmt.Printf("Failed when processing pages: %s", err)
 	}
 }
 
-func PagesEmbedFS(c *gin.Context) {
+func PagesEmbedFS(c *touka.Context) {
 	path := c.Request.URL.Path
 
 	if path == "" || path == "/" {
@@ -48,11 +48,11 @@ func PagesEmbedFS(c *gin.Context) {
 
 		data, err := fs.ReadFile(pages, path)
 		if err != nil {
-			logError("Failed when processing %s: %s", path, err)
+			c.Errorf("Failed when processing %s: %s", path, err)
 			c.String(http.StatusNotFound, "Not Found")
 			return
 		}
-		c.Data(http.StatusOK, "text/html; charset=utf-8", data)
+		c.Raw(http.StatusOK, "text/html; charset=utf-8", data)
 		return
 
 	}

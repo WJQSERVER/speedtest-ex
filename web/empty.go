@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/gin-gonic/gin"
+	"github.com/infinite-iroha/touka"
 )
 
 var (
@@ -23,23 +23,29 @@ func InitEmptyBuf() {
 }
 
 // empty 处理对/empty的请求，丢弃请求体并返回成功的状态码
-func empty(c *gin.Context) {
+func empty(c *touka.Context) {
 
 	var err error
+	/*
+		// 使用固定32KB缓冲池
+		buffer := BufferPool.Get().([]byte)
+		defer BufferPool.Put(buffer)
 
-	// 使用固定32KB缓冲池
-	buffer := BufferPool.Get().([]byte)
-	defer BufferPool.Put(buffer)
+		_, err = io.CopyBuffer(io.Discard, c.Request.Body, buffer)
+		if err != nil {
+			logWarning("empty > io.CopyBuffer error: %v", err)
+			return
+		}
+		c.Status(http.StatusOK)
+	*/
 
-	_, err = io.CopyBuffer(io.Discard, c.Request.Body, buffer)
+	_, err = io.Copy(io.Discard, c.Request.Body)
 	if err != nil {
-		logWarning("empty > io.CopyBuffer error: %v", err)
 		return
 	}
 	c.Status(http.StatusOK)
-
 	/*
-		_, err := io.Copy(io.Discard, c.Request.Body)
+		_, err = copyb.Copy(io.Discard, c.Request.Body)
 		if err != nil {
 			return
 		}
