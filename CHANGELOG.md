@@ -1,5 +1,17 @@
 # 更新日志
 
+1.1.0 - 2025-06-07
+---
+- PRE-RELEASE: 此版本是v1.1.0的预发布版本; 
+- CHANGE: 转向Touka框架
+- CHANGE: 弃用-cfg, 换为-c (保留兼容性支持, -cfg仍然正常工作)
+- CHANGE: 下载数据生成增加流模式
+- CHANGE: 加入Compress支持
+- CHANGE: 优化测速脚本性能
+- CHANGE: 对实现进行优化, 避免ws的一些关闭问题, 提升下载数据生成效率
+- CHANGE: 改进前端内容handle处置
+- ADD: 加入CLI
+
 25w15b - 2025-06-07
 ---
 - PRE-RELEASE: 此版本是v1.1.0的预发布版本; 
