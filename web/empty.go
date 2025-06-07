@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"sync"
 
+	"github.com/WJQSERVER-STUDIO/go-utils/copyb"
 	"github.com/infinite-iroha/touka"
 )
 
@@ -39,18 +40,17 @@ func empty(c *touka.Context) {
 		c.Status(http.StatusOK)
 	*/
 
-	_, err = io.Copy(io.Discard, c.Request.Body)
+	//_, err = io.Copy(io.Discard, c.Request.Body)
+	//if err != nil {
+	//	return
+	//}
+	c.Status(http.StatusOK)
+
+	_, err = copyb.Copy(io.Discard, c.Request.Body)
 	if err != nil {
 		return
 	}
 	c.Status(http.StatusOK)
-	/*
-		_, err = copyb.Copy(io.Discard, c.Request.Body)
-		if err != nil {
-			return
-		}
-		c.Status(http.StatusOK)
-	*/
 
 	// for debug
 	/*

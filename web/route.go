@@ -9,6 +9,7 @@ import (
 	"speedtest/results"
 	"time"
 
+	"github.com/fenthope/compress"
 	"github.com/fenthope/cors"
 	"github.com/fenthope/reco"
 	"github.com/fenthope/record"
@@ -25,6 +26,7 @@ func ListenAndServe(cfg *config.Config, version string) error {
 	router := touka.New()
 	router.Use(touka.Recovery())
 	router.Use(record.Middleware())
+	router.Use(compress.Compression(compress.DefaultCompressionConfig()))
 	var (
 		logPath string
 		logSize int
@@ -104,19 +106,17 @@ func ListenAndServe(cfg *config.Config, version string) error {
 		getIP(c, cfg)
 	})
 	// 垃圾数据接口
-	router.GET(backendUrl+"/garbage", garbage)
+	if cfg.Speedtest.DownloadGenStream {
+		router.GET(backendUrl+"/garbage", garbageStream)
+	} else {
+		router.GET(backendUrl+"/garbage", garbage)
+	}
 	// 空接口
 	router.ANY(backendUrl+"/empty", empty)
 	// 获取图表数据
 	router.GET(backendUrl+"/api/chart-data", func(c *touka.Context) {
 		GetChartData(database.DB, cfg, c)
 	})
-	// 反向ping
-	/*
-		router.GET(backendUrl+"/revping", func(c *touka.Context) {
-			pingIP(c, cfg)
-		})
-	*/
 
 	basePath := cfg.Server.BasePath
 	// 记录遥测数据
@@ -135,12 +135,6 @@ func ListenAndServe(cfg *config.Config, version string) error {
 	router.GET(basePath+"/api/chart-data", func(c *touka.Context) {
 		GetChartData(database.DB, cfg, c)
 	})
-	// 反向ping
-	/*
-		router.GET(basePath+"/revping", func(c *touka.Context) {
-			pingIP(c, cfg)
-		})
-	*/
 	// 反向ping ws
 	router.GET(basePath+"/ws", func(c *touka.Context) {
 		handleWebSocket(c, cfg)
@@ -148,19 +142,13 @@ func ListenAndServe(cfg *config.Config, version string) error {
 
 	// PHP 前端默认值兼容性
 	router.ANY(basePath+"/empty.php", empty)
-	router.GET(basePath+"/garbage.php", garbage)
+	router.GET(basePath+"/garbage.php", garbageStream)
 	router.GET(basePath+"/getIP.php", func(c *touka.Context) {
 		getIP(c, cfg)
 	})
 	router.POST(basePath+"/results/telemetry.php", func(c *touka.Context) {
 		results.Record(c, cfg)
 	})
-
-	//router.NoRoute(gin.WrapH(http.FileServer(http.FS(pages))))
-	// 处理所有请求
-	//router.NoRoute(func(c *touka.Context) {
-	//	PagesEmbedFS(c)
-	//})
 	router.SetUnMatchFS(http.FS(pages))
 	return StartServer(cfg, router)
 }

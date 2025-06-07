@@ -6,6 +6,7 @@
 [Speedtest]
   downDataChunkSize = 4
   downDataChunkCount = 4
+  downloadGenStream = true
 
 [Log]
   logFilePath = "/data/speedtest-ex/log/speedtest-ex.log"

@@ -33,11 +33,13 @@ type ServerConfig struct {
 [Speedtest]
 downDataChunkSize = 4 #mb
 downDataChunkCount = 4
+downloadGenStream = true
 */
 
 type SpeedtestConfig struct {
-	DownDataChunkSize  int `toml:"downDataChunkSize"`  // mb
-	DownDataChunkCount int `toml:"downDataChunkCount"` // 下载数据块数量
+	DownDataChunkSize  int  `toml:"downDataChunkSize"`  // mb
+	DownDataChunkCount int  `toml:"downDataChunkCount"` // 下载数据块数量
+	DownloadGenStream  bool `toml:"downloadGenStream"`  // 是否使用流
 }
 
 /*
