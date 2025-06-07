@@ -51,7 +51,6 @@ func getHostIPInfo(ip string, cfg *config.Config) (CommonIPInfoResponse, error) 
 
 	// 检查非200状态码
 	if resp.StatusCode != 200 {
-		logWarning("self-host response status code: %s", resp.StatusCode)
 		return CommonIPInfoResponse{}, err
 	}
 
@@ -61,7 +60,6 @@ func getHostIPInfo(ip string, cfg *config.Config) (CommonIPInfoResponse, error) 
 
 		return CommonIPInfoResponse{}, err
 	}
-	logInfo("self-host response: " + string(bodyBytes))
 
 	// 使用IPHostResponse结构体解析json数据
 	var ipHost IPHostResponse

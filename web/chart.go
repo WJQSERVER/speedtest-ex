@@ -13,7 +13,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/gin-gonic/gin"
+	"github.com/infinite-iroha/touka"
 )
 
 // RawIspInfo 结构体表示原始 ISP 信息
@@ -90,11 +90,11 @@ func (rl *SimpleRateLimiter) Allow() bool {
 }
 
 // GetChartData 处理获取图表数据的请求
-func GetChartData(db database.DataAccess, cfg *config.Config, c *gin.Context) {
+func GetChartData(db database.DataAccess, cfg *config.Config, c *touka.Context) {
 
 	if !rateLimiter.Allow() {
 		// 如果限流，返回 429 Too Many Requests
-		c.JSON(http.StatusTooManyRequests, gin.H{
+		c.JSON(http.StatusTooManyRequests, touka.H{
 			"error": "Too Many Requests",
 		})
 		return
@@ -103,7 +103,7 @@ func GetChartData(db database.DataAccess, cfg *config.Config, c *gin.Context) {
 	// 获取最近N条记录
 	records, err := db.GetLastNRecords(cfg.Frontend.Chartlist)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, touka.H{"error": err.Error()})
 		return
 	}
 
@@ -120,11 +120,14 @@ func GetChartData(db database.DataAccess, cfg *config.Config, c *gin.Context) {
 		var ispInfo IspInfo
 		err := json.Unmarshal([]byte(record.ISPInfo), &ispInfo)
 		if err != nil {
-			logError("解码 ISP 信息失败: %s", err)
+			c.Errorf("解码 ISP 信息失败: %s", err)
 			ispInfo = IspInfo{ProcessedString: "未知", RawIspInfo: CommonIPInfoResponse{}}
 		}
 		// 对IP信息进行预处理
-		psIP, psRemaining := GetIPFromProcessedString(ispInfo.ProcessedString)
+		psIP, psRemaining, err := GetIPFromProcessedString(ispInfo.ProcessedString)
+		if err != nil {
+			c.Errorf("处理IP信息失败: %s", err)
+		}
 		ispIP := PreprocessIPInfo(ispInfo.RawIspInfo.IP)
 		psIP = PreprocessIPInfo(psIP)
 		newProcessedString := fmt.Sprintf("%s%s", psIP, psRemaining)
@@ -135,7 +138,7 @@ func GetChartData(db database.DataAccess, cfg *config.Config, c *gin.Context) {
 		// 重新编码ISP信息
 		ispInfoJSON, err := json.Marshal(ispInfo)
 		if err != nil {
-			logError("编码 ISP 信息失败: %s", err)
+			c.Errorf("编码 ISP 信息失败: %s", err)
 			ispInfoJSON = []byte("{}")
 		}
 		record.ISPInfo = string(ispInfoJSON)
@@ -156,23 +159,23 @@ func GetChartData(db database.DataAccess, cfg *config.Config, c *gin.Context) {
 }
 
 // GetIPFromProcessedString 分割ProcessedString字段, 取出IP
-func GetIPFromProcessedString(processedString string) (string, string) {
+func GetIPFromProcessedString(processedString string) (string, string, error) {
 	// 查找 ' - ' 的位置
 	index := strings.Index(processedString, " - ")
 	if index == -1 {
-		return "", ""
+		return "", "", fmt.Errorf("ProcessedString不符合规范: %s", processedString)
 	}
 
 	ip := processedString[:index]
 	_, isRegularIP := isIP(ip)
 	if !isRegularIP {
-		logWarning("IP信息不符合规范: %s", ip)
-		return "", ""
+		//logWarning("IP信息不符合规范: %s", ip)
+		return "", "", fmt.Errorf("IP信息不符合规范: %s", ip)
 	}
 
 	// 取出IP和剩余部分
 	remaining := processedString[index:] // 包含 ' - ' 和后面的内容
-	return ip, remaining
+	return ip, remaining, nil
 }
 
 // 检测IP是否符合规范

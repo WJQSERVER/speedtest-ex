@@ -11,16 +11,8 @@ import (
 	"speedtest/database"
 	"speedtest/database/schema"
 
-	"github.com/WJQSERVER-STUDIO/go-utils/logger"
-	"github.com/gin-gonic/gin"
+	"github.com/infinite-iroha/touka"
 	"github.com/oklog/ulid/v2"
-)
-
-var (
-	logw       = logger.Logw
-	logInfo    = logger.LogInfo
-	logWarning = logger.LogWarning
-	logError   = logger.LogError
 )
 
 type Result struct {
@@ -51,7 +43,7 @@ type CommonIPInfoResponse struct {
 	Continent string `json:"continent"` // ipinfo = nil, self-host = continent_name
 }
 
-func Record(c *gin.Context, cfg *config.Config) {
+func Record(c *touka.Context, cfg *config.Config) {
 	if cfg.Database.Model == "none" {
 		c.String(http.StatusOK, "Telemetry is disabled")
 		return
@@ -93,10 +85,10 @@ func Record(c *gin.Context, cfg *config.Config) {
 
 	err := database.DB.SaveTelemetry(&record)
 	if err != nil {
-		logError("Error inserting into database: %s", err)
+		c.Errorf("Error saving telemetry data: %s", err)
 		c.String(http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
 
-	c.String(http.StatusOK, "id "+uuid.String())
+	c.String(http.StatusOK, "%s", "id "+uuid.String())
 }

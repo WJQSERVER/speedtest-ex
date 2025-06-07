@@ -19,32 +19,20 @@ import (
 	"speedtest/database"
 	"speedtest/web"
 
-	"github.com/WJQSERVER-STUDIO/go-utils/logger"
 	_ "github.com/breml/rootcerts"
-	"github.com/gin-gonic/gin"
 )
 
 var (
-	cfg    *config.Config
-	router *gin.Engine
+	cfg *config.Config
 )
 
 var (
 	version string
 )
 
-// 日志模块
-var (
-	logw       = logger.Logw
-	LogDump    = logger.LogDump
-	logDebug   = logger.LogDebug
-	logInfo    = logger.LogInfo
-	logWarning = logger.LogWarning
-	logError   = logger.LogError
-)
-
 var (
 	cfgfile     string
+	configfile  string
 	port        int
 	initcfg     bool
 	auth        bool
@@ -56,18 +44,19 @@ var (
 )
 
 func ReadFlag() {
-	cfgfilePtr := flag.String("cfg", "./config/config.toml", "config file path") // 配置文件路径
-	portPtr := flag.Int("port", 0, "port to listen on")                          // 监听端口
-	initcfgPtr := flag.Bool("initcfg", false, "init config mode to run")         // 初始化配置模式
-	authPtr := flag.Bool("auth", false, "Enbale auth mode")                      // 授权模式
-	userPtr := flag.String("user", "", "User name for auth mode")                // 用户名
-	passwordPtr := flag.String("password", "", "Password for auth mode")         // 密码
-	secretPtr := flag.String("secret", "", "Secret key for auth mode")           // 密钥
-	devPtr := flag.Bool("dev", false, "Development mode")                        // 开发模式
-	versionPtr := flag.Bool("version", false, "Show version")                    // 显示版本
+	cfgfilePtr := flag.String("cfg", "", "config file path(Deprecated)")          // 配置文件路径(弃用)
+	configfilePtr := flag.String("c", "./config/config.toml", "config file path") // 配置文件路径
+	portPtr := flag.Int("port", 0, "port to listen on")                           // 监听端口
+	initcfgPtr := flag.Bool("initcfg", false, "init config mode to run")          // 初始化配置模式
+	authPtr := flag.Bool("auth", false, "Enbale auth mode")                       // 授权模式
+	userPtr := flag.String("user", "", "User name for auth mode")                 // 用户名
+	passwordPtr := flag.String("password", "", "Password for auth mode")          // 密码
+	secretPtr := flag.String("secret", "", "Secret key for auth mode")            // 密钥
+	devPtr := flag.Bool("dev", false, "Development mode")                         // 开发模式
+	versionPtr := flag.Bool("version", false, "Show version")                     // 显示版本
 
 	flag.Parse()
-	//configfile = *cfgfile
+	configfile = *configfilePtr
 	cfgfile = *cfgfilePtr
 	port = *portPtr
 	initcfg = *initcfgPtr
@@ -77,13 +66,18 @@ func ReadFlag() {
 	secret = *secretPtr
 	dev = *devPtr
 	showVersion = *versionPtr
+
+	if cfgfile != "" && configfile == "./config/config.toml" {
+		configfile = cfgfile
+		fmt.Printf("-cfg is Deprecated, using -c \n")
+	}
 }
 
 func loadConfig() {
 	var err error
 	// 初始化配置
 	//cfg, err = config.LoadConfig(configfile)
-	cfg, err = config.LoadConfig(cfgfile)
+	cfg, err = config.LoadConfig(configfile)
 	if err != nil {
 		log.Fatalf("Failed to load config: %v", err)
 	}
@@ -91,7 +85,7 @@ func loadConfig() {
 }
 
 func saveNewConfig() {
-	err := config.SaveConfig(cfgfile, cfg)
+	err := config.SaveConfig(configfile, cfg)
 	if err != nil {
 		log.Printf("Failed to save config: %v", err)
 	}
@@ -162,18 +156,9 @@ func initConfig() {
 
 }
 
-func setupLogger() {
-	// 初始化日志模块
-	var err error
-	err = logger.Init(cfg.Log.LogFilePath, cfg.Log.MaxLogSize) // 传递日志文件路径
-	if err != nil {
-		log.Fatalf("Failed to initialize logger: %v", err)
-	}
-}
-
 func debugOutput() {
 	// 输出调试
-	fmt.Printf("ConfigFile: %s\n", cfgfile)
+	fmt.Printf("ConfigFile: %s\n", configfile)
 	fmt.Printf("Port: %d\n", port)
 	fmt.Printf("InitCfg: %t\n", initcfg)
 	fmt.Printf("Auth: %t\n", auth)
@@ -197,7 +182,6 @@ func init() {
 		initConfig()
 	}
 	//updateConfig()
-	setupLogger()
 	web.RandomDataInit(cfg)
 	web.InitEmptyBuf()
 }
@@ -210,5 +194,4 @@ func main() {
 		debugOutput()
 	}
 	web.ListenAndServe(cfg, version)
-	defer logger.Close()
 }

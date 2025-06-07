@@ -1,135 +1,225 @@
 <!DOCTYPE html>
-<html lang="zh">
-
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>登录</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no, user-scalable=no">
+    <title>登录 - SpeedTest-EX</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+        crossorigin="anonymous">
     <style>
-        body,
-        html {
-            margin: 0;
-            padding: 0;
-            font-family: sans-serif;
-            background-color: #ebebeb;
-            color: #333;
+        :root {
+            --primary-color: #007bff;
+            --background-color: #f0f2f5; /* 更柔和的背景 */
+            --card-background-color: #ffffff;
+            --text-color: #343a40;
+            --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
         }
-
-        h1 {
+        body {
+            font-family: var(--font-family-sans-serif);
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; /* 垂直居中 */
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .login-container {
+            width: 100%;
+            max-width: 420px; /* 登录框宽度 */
+        }
+        .app-title {
             text-align: center;
-            color: #075199;
-            margin-bottom: 2.5%;
-            font-size: 1.75rem;
-            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            font-size: 2rem;
+            font-weight: 600;
         }
-
         .card {
-            background-color: #f0f0f0;
+            background-color: var(--card-background-color);
+            border: none; /* 移除 Bootstrap 默认边框 */
+            border-radius: 12px; /* 更大圆角 */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
         }
-
-        footer {
-            line-height: 1.25;
+        .card-header {
+            background-color: transparent; /* 透明头部 */
+            border-bottom: 1px solid #e9ecef;
+            padding: 1.25rem 1.5rem;
+            font-size: 1.25rem;
+            font-weight: 500;
             text-align: center;
-            font-size: 1rem;
-            padding: 10px 0;
         }
-
-        /* Toast 位置调整 */
-        #toast {
+        .card-body {
+            padding: 2rem; /* 更大内边距 */
+        }
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+        }
+        .form-control {
+            border-radius: 8px; /* 输入框圆角 */
+            padding: 0.8rem 1rem;
+        }
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+        }
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            border-radius: 25px;
+            padding: 0.7rem 1.5rem;
+            font-weight: 500;
+            width: 100%; /* 按钮宽度撑满 */
+            transition: background-color 0.2s ease;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        .toast-container { /* Bootstrap 5.1+ */
             position: fixed;
             top: 20px;
             right: 20px;
-            z-index: 11;
+            z-index: 1090; /* 高于其他内容 */
+        }
+        footer {
+            position: absolute; /* 固定在底部 */
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #6c757d;
+            padding: 15px 0;
+        }
+        footer a {
+            color: #6c757d;
+            text-decoration: none;
+        }
+        footer a:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
         }
     </style>
 </head>
-
 <body>
-    <div class="container mt-5">
-        <h1>SpeedTest-EX</h1>
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        登录
+    <div class="login-container">
+        <h1 class="app-title">SpeedTest-EX</h1>
+        <div class="card">
+            <div class="card-header">
+                管理员登录
+            </div>
+            <div class="card-body">
+                <form id="loginForm">
+                    <div class="mb-3">
+                        <label for="usernameInput" class="form-label">用户名</label>
+                        <input type="text" class="form-control" id="usernameInput" name="username" required autocomplete="username">
                     </div>
-                    <div class="card-body">
-                        <form id="loginForm">
-                            <div class="mb-3">
-                                <label for="username" class="form-label">用户名</label>
-                                <input type="text" class="form-control" id="username" name="username" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="password" class="form-label">密码</label>
-                                <input type="password" class="form-control" id="password" name="password" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary">登录</button>
-                        </form>
+                    <div class="mb-4">
+                        <label for="passwordInput" class="form-label">密码</label>
+                        <input type="password" class="form-control" id="passwordInput" name="password" required autocomplete="current-password">
                     </div>
-                </div>
+                    <button type="submit" class="btn btn-primary">登 录</button>
+                </form>
             </div>
         </div>
     </div>
 
-    <div id="toast" class="p-3">
-        <div id="toastMessage" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <!-- Bootstrap Toast Container -->
+    <div class="toast-container">
+        <div id="loginToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
             <div class="toast-header">
-                <strong class="me-auto">通知</strong>
+                <strong class="me-auto" id="toastTitle">通知</strong>
                 <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
-            <div class="toast-body">
-                登录成功！
+            <div class="toast-body" id="toastBody">
+                <!-- 消息将在这里填充 -->
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
     <script>
-        document.getElementById('loginForm').addEventListener('submit', function (e) {
-            e.preventDefault();
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('loginForm');
+            const usernameInput = document.getElementById('usernameInput');
+            const passwordInput = document.getElementById('passwordInput');
+            const loginToastElement = document.getElementById('loginToast');
+            const toastTitleElement = document.getElementById('toastTitle');
+            const toastBodyElement = document.getElementById('toastBody');
+            
+            // 创建 Toast 实例一次
+            const loginToast = new bootstrap.Toast(loginToastElement, { autohide: true, delay: 3000 });
 
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+            const showToast = (title, message, isSuccess) => {
+                toastTitleElement.textContent = title;
+                toastBodyElement.textContent = message;
+                loginToastElement.classList.remove('text-bg-success', 'text-bg-danger'); // 清除旧的背景类
+                if (isSuccess) {
+                    loginToastElement.classList.add('text-bg-success'); // Bootstrap 5 success background
+                } else {
+                    loginToastElement.classList.add('text-bg-danger'); // Bootstrap 5 danger background
+                }
+                loginToast.show();
+            };
 
-            fetch('/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
-            })
-                .then(response => response.json())
-                .then(data => {
-                    const toastMessage = document.getElementById('toastMessage');
-                    const toast = new bootstrap.Toast(toastMessage);
+            loginForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const username = usernameInput.value.trim();
+                const password = passwordInput.value;
 
-                    if (data.success) {
-                        toastMessage.querySelector('.toast-body').textContent = '登录成功！';
-                        toast.show();
+                if (!username || !password) {
+                    showToast('输入错误', '用户名和密码不能为空。', false);
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/api/login', {
+                        method: 'POST',
+                        headers: {
+                            // 服务器期望 x-www-form-urlencoded
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        // FormData 会自动处理编码，或者手动构建
+                        body: new URLSearchParams({
+                            'username': username,
+                            'password': password
+                        })
+                    });
+
+                    const responseData = await response.json();
+
+                    if (response.ok && responseData.success) {
+                        showToast('登录成功', '即将跳转到主页...', true);
                         setTimeout(() => {
-                            window.location.href = '/';
-                        }, 1000); // 1秒后重定向
+                            window.location.href = '/'; // 成功后跳转
+                        }, 1500); // 延迟以便用户看到提示
                     } else {
-                        toastMessage.querySelector('.toast-body').textContent = '登录失败：' + (data.error || '未知错误');
-                        toast.show();
+                        showToast('登录失败', responseData.error || '用户名或密码错误。', false);
                     }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    const toastMessage = document.getElementById('toastMessage');
-                    const toast = new bootstrap.Toast(toastMessage);
-                    toastMessage.querySelector('.toast-body').textContent = '发生错误，请稍后再试。';
-                    toast.show();
-                });
+                } catch (error) {
+                    console.error('登录请求失败:', error);
+                    showToast('网络错误', '无法连接到服务器，请稍后再试。', false);
+                }
+            });
         });
     </script>
+     <footer>
+        <p>
+            Copyright © <span id="currentYear"></span> WJQSERVER<br>
+            <a href="https://github.com/WJQSERVER/speedtest-ex" target="_blank" rel="noopener noreferrer">GitHub: WJQSERVER/speedtest-ex</a>
+        </p>
+    </footer>
+    <script>
+        if (document.getElementById('currentYear')) {
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+        }
+    </script>
 </body>
-<footer>
-    <p>
-        Copyright &copy; 2025 WJQSERVER<br>
-        GitHub仓库地址：<a href="https://github.com/WJQSERVER/speedtest-ex">WJQSERVER/speedtest-ex</a>
-    </p>
-</footer>
-
 </html>

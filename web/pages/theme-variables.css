@@ -1,0 +1,147 @@
+/* theme-variables.css */
+:root {
+    /* --- Light Theme Variables (Default) --- */
+    --theme-primary: #007bff;
+    --theme-primary-hover: #0056b3;
+    --theme-secondary: #6c757d;
+    --theme-secondary-hover: #545b62;
+
+    --theme-background: #f8f9fa;         /* Overall page background */
+    --theme-surface: #ffffff;            /* Cards, panels, modals */
+    --theme-surface-alt: #f0f2f5;       /* Slightly off-white surfaces like test boxes */
+
+    --theme-text-strong: #212529;        /* Headings, important text */
+    --theme-text-default: #343a40;       /* Regular text */
+    --theme-text-muted: #6c757d;         /* Subtitles, less important text */
+    --theme-text-on-primary: #ffffff;    /* Text on primary color buttons/backgrounds */
+    --theme-text-on-secondary: #ffffff;
+
+    --theme-border: #dee2e6;
+    --theme-input-bg: #ffffff;
+    --theme-input-border: #ced4da;      /* Input field border */
+    --theme-input-text: #212529;
+    --theme-input-focus-border: #86b7fe; /* Bootstrap focus blue */
+    --theme-input-focus-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+
+    --theme-link: var(--theme-primary);
+    --theme-link-hover: var(--theme-primary-hover);
+
+    --theme-shadow-light: rgba(0, 0, 0, 0.075);
+    --theme-shadow-strong: rgba(0, 0, 0, 0.125);
+
+    /* Chart specific - Light */
+    --chart-grid: rgba(0, 0, 0, 0.1);
+    --chart-ticks: #666;
+    --chart-labels: #333; /* Includes legend, title */
+    --chart-tooltip-bg: rgba(0, 0, 0, 0.8);
+    --chart-tooltip-text: #fff;
+
+    /* Toast specific - Light */
+    --toast-bg: rgba(255, 255, 255, 0.95);
+    --toast-text: var(--theme-text-strong);
+    --toast-header-bg: #f1f1f1;
+    --toast-border: var(--theme-border);
+    --toast-btn-close-filter: invert(0);
+    --toast-success-bg-mix: #28a745; /* Green for success */
+    --toast-danger-bg-mix: #dc3545;  /* Red for danger */
+
+    /* Bootstrap specific overrides (for login.html) - Light */
+    --bs-body-color: var(--theme-text-default);
+    --bs-body-bg: var(--theme-background);
+    --bs-primary: var(--theme-primary);
+    --bs-secondary: var(--theme-secondary);
+    --bs-border-color: var(--theme-border);
+    --bs-card-bg: var(--theme-surface);
+    --bs-card-border-color: var(--theme-border);
+    --bs-card-cap-bg: transparent;
+    --bs-form-control-bg: var(--theme-input-bg);
+    --bs-form-control-color: var(--theme-input-text);
+    --bs-form-control-border-color: var(--theme-input-border);
+    --bs-btn-color: var(--theme-text-on-primary);
+    --bs-btn-bg: var(--theme-primary);
+    --bs-btn-border-color: var(--theme-primary);
+    --bs-btn-hover-bg: var(--theme-primary-hover);
+    --bs-btn-hover-border-color: var(--theme-primary-hover);
+    --bs-toast-bg: var(--toast-bg);
+    --bs-toast-color: var(--toast-text);
+    --bs-toast-header-bg: var(--toast-header-bg);
+    --bs-toast-header-color: var(--theme-text-strong);
+    --bs-toast-border-color: var(--toast-border);
+    --bs-btn-close-color: var(--theme-text-strong);
+    --bs-body-emphasis-color: var(--theme-text-strong);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* --- Dark Theme Variables --- */
+        --theme-primary: #4dabf7;
+        --theme-primary-hover: #74c0fc;
+        --theme-secondary: #868e96;
+        --theme-secondary-hover: #adb5bd;
+
+        --theme-background: #121212;
+        --theme-surface: #1e1e1e;
+        --theme-surface-alt: #252525;
+
+        --theme-text-strong: #f8f9fa;
+        --theme-text-default: #e0e0e0;
+        --theme-text-muted: #adb5bd;
+        --theme-text-on-primary: #050505;
+        --theme-text-on-secondary: #050505;
+
+        --theme-border: #424242;
+        --theme-input-bg: #2a2a2a;
+        --theme-input-border: #555555;
+        --theme-input-text: #e0e0e0;
+        --theme-input-focus-border: var(--theme-primary);
+        --theme-input-focus-shadow: 0 0 0 0.25rem rgba(77, 171, 247, 0.35);
+
+        --theme-link: var(--theme-primary);
+        --theme-link-hover: var(--theme-primary-hover);
+
+        --theme-shadow-light: rgba(255, 255, 255, 0.04);
+        --theme-shadow-strong: rgba(255, 255, 255, 0.07);
+
+        /* Chart specific - Dark */
+        --chart-grid: rgba(255, 255, 255, 0.12);
+        --chart-ticks: #b0b0b0;
+        --chart-labels: #d0d0d0;
+        --chart-legend-color: #c0c0c0;
+        --chart-tooltip-bg: rgba(40, 40, 40, 0.9);
+        --chart-tooltip-text: #f0f0f0;
+
+        /* Toast specific - Dark */
+        --toast-bg: rgba(42, 42, 42, 0.95);
+        --toast-text: var(--theme-text-default);
+        --toast-header-bg: #303030;
+        --toast-border: var(--theme-border);
+        --toast-btn-close-filter: invert(1) grayscale(100%) brightness(200%);
+        --toast-success-bg-mix: color-mix(in srgb, #28a745 70%, #000000);
+        --toast-danger-bg-mix: color-mix(in srgb, #dc3545 70%, #000000);
+
+        /* Bootstrap specific overrides (for login.html) - Dark */
+        --bs-body-color: var(--theme-text-default);
+        --bs-body-bg: var(--theme-background);
+        --bs-primary: var(--theme-primary);
+        --bs-secondary: var(--theme-secondary);
+        --bs-border-color: var(--theme-border);
+        --bs-card-bg: var(--theme-surface);
+        --bs-card-border-color: var(--theme-border);
+        --bs-card-cap-bg: transparent;
+        --bs-form-control-bg: var(--theme-input-bg);
+        --bs-form-control-color: var(--theme-input-text);
+        --bs-form-control-border-color: var(--theme-input-border);
+        --bs-btn-color: var(--theme-text-on-primary);
+        --bs-btn-bg: var(--theme-primary);
+        --bs-btn-border-color: var(--theme-primary);
+        --bs-btn-hover-bg: var(--theme-primary-hover);
+        --bs-btn-hover-border-color: var(--theme-primary-hover);
+        --bs-toast-bg: var(--toast-bg);
+        --bs-toast-color: var(--toast-text);
+        --bs-toast-header-bg: var(--toast-header-bg);
+        --bs-toast-header-color: var(--theme-text-strong);
+        --bs-toast-border-color: var(--toast-border);
+        --bs-btn-close-color: var(--theme-text-strong);
+        --bs-body-emphasis-color: var(--theme-text-strong);
+    }
+}

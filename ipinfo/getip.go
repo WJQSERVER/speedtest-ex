@@ -1,18 +1,10 @@
 package ipinfo
 
 import (
+	"fmt"
 	"regexp"
 	"speedtest/config"
 	"speedtest/results"
-
-	"github.com/WJQSERVER-STUDIO/go-utils/logger"
-)
-
-var (
-	logw       = logger.Logw
-	logInfo    = logger.LogInfo
-	logWarning = logger.LogWarning
-	logError   = logger.LogError
 )
 
 // 预编译的正则表达式变量
@@ -30,7 +22,7 @@ var (
 	removeASRegexp          = regexp.MustCompile(`AS\d+\s`)                          // 用于去除 ISP 信息中的自治系统编号
 )
 
-func GetIP(clientIP string, cfg *config.Config) results.Result {
+func GetIP(clientIP string, cfg *config.Config) (results.Result, error) {
 	var ret results.Result // 创建结果结构体实例
 	// 使用正则表达式匹配不同类型的 IP 地址
 	switch {
@@ -72,7 +64,10 @@ func GetIP(clientIP string, cfg *config.Config) results.Result {
 			return ret // 返回结果
 		} */
 
-	ispInfo := getIPInfo(clientIP, cfg)
+	ispInfo, err := getIPInfo(clientIP, cfg)
+	if err != nil {
+		return results.Result{}, err
+	}
 	//ret.RawISPInfo = ispInfo // 存储原始 ISP 信息
 	// 转写 ISP 信息
 	ret.RawISPInfo = results.CommonIPInfoResponse{
@@ -99,11 +94,11 @@ func GetIP(clientIP string, cfg *config.Config) results.Result {
 		ret.ProcessedString += " - " + isp // 更新处理后的字符串
 	*/
 	ret.ProcessedString = MakeProcessedString(ret.ProcessedString, ispInfo) // 更新处理后的字符串
-	return ret                                                              // 返回结果
+	return ret, nil                                                         // 返回结果
 }
 
 // 获取 IP 地址信息
-func getIPInfo(ip string, cfg *config.Config) CommonIPInfoResponse {
+func getIPInfo(ip string, cfg *config.Config) (CommonIPInfoResponse, error) {
 
 	switch cfg.IPinfo.Model {
 	case "ip":
@@ -111,21 +106,20 @@ func getIPInfo(ip string, cfg *config.Config) CommonIPInfoResponse {
 		var ret CommonIPInfoResponse // 创建结果结构体实例
 		ret, err := getHostIPInfo(ip, cfg)
 		if err != nil {
-			logWarning("Error getting host IP info: " + err.Error())
+			return CommonIPInfoResponse{}, err
 		}
-		return ret
+		return ret, nil
 	case "ipinfo":
 		// ipinfo.io 信息查询
 		var ret CommonIPInfoResponse // 创建结果结构体实例
 		ret, err := getIPInfoIO(ip, cfg)
 		if err != nil {
-			logWarning("Error getting ipinfo.io info: " + err.Error())
+			return CommonIPInfoResponse{}, err
 		}
-		return ret
+		return ret, nil
 	default:
 		// 模型不支持
-		logError("Unsupported IPinfo model: " + cfg.IPinfo.Model)
-		return CommonIPInfoResponse{}
+		return CommonIPInfoResponse{}, fmt.Errorf("Unsupported IPinfo model: " + cfg.IPinfo.Model)
 	}
 }
 
