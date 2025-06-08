@@ -5,6 +5,8 @@ import (
 	"errors"
 	"net/http"
 	"speedtest/config"
+	"strings"
+	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -20,49 +22,92 @@ type PingResult struct {
 	Error   string  `json:"error,omitempty"`
 }
 
-var upgrader = websocket.Upgrader{
-	CheckOrigin: func(r *http.Request) bool {
-		return true // 允许所有来源
-	},
-}
+var (
+	upgrader = websocket.Upgrader{
+		CheckOrigin: func(r *http.Request) bool {
+			return true // 允许所有来源
+		},
+	}
+	useUnprivilegedPing      = false    // 全局标志, 记录是否应强制使用非特权ping
+	checkUnprivilegedPingMux sync.Mutex // 互斥锁, 确保首次检测和标志设置是线程安全的
+)
 
-func pingIP(ip string, cfg *config.Config) (PingResult, error) {
+func pingIP(ip string, cfg *config.Config, c *touka.Context) (PingResult, error) {
 	if ip == "" {
 		return PingResult{}, errors.New("IP address is required")
 	}
 
-	if cfg.RevPing.Enable {
+	if !cfg.RevPing.Enable {
+		return PingResult{IP: ip, Success: false, Error: "revping-not-online"}, nil
+	}
+
+	// 内部函数, 封装单次ping的逻辑, 便于重试
+	runPing := func(privileged bool) (*ping.Statistics, error) {
 		pinger, err := ping.NewPinger(ip)
 		if err != nil {
-			return PingResult{IP: ip, Success: false, Error: err.Error()}, err
+			return nil, err
 		}
+		pinger.SetPrivileged(privileged)
+		pinger.Count = 1
 
 		timeout := 3 * time.Second
 		ctx, cancel := context.WithTimeout(context.Background(), timeout)
 		defer cancel()
-		pinger.Count = 1
+
 		err = pinger.RunWithContext(ctx)
 		if err != nil {
-			if errors.Is(err, context.DeadlineExceeded) {
-				return PingResult{IP: ip, Success: false, Error: "timeout"}, nil
-			}
-			return PingResult{IP: ip, Success: false, Error: err.Error()}, err
+			return nil, err
 		}
-
 		stats := pinger.Statistics()
-		return PingResult{
-			IP:      ip,
-			Success: true,
-			RTT:     stats.AvgRtt.Seconds() * 1000,
-		}, nil
-	} else {
-		return PingResult{
-			IP:      ip,
-			Success: false,
-			RTT:     0,
-			Error:   "revping-not-online",
-		}, nil
+		if stats.PacketsRecv == 0 {
+			return nil, context.DeadlineExceeded // 如果没有收到包, 视作超时
+		}
+		return stats, nil
 	}
+
+	// --- 自动检测与切换的核心逻辑 ---
+
+	// 首先, 根据全局标志决定是否一开始就使用非特权模式
+	privilegedAttempt := !useUnprivilegedPing
+
+	stats, err := runPing(privilegedAttempt)
+
+	// 如果第一次尝试(特权模式)失败了
+	if err != nil {
+		// 检查是否是权限错误, 并且我们确实是在特权模式下尝试的
+		isPermissionError := strings.Contains(err.Error(), "permission denied") || strings.Contains(err.Error(), "operation not permitted")
+
+		checkUnprivilegedPingMux.Lock()
+		// 再次检查, 防止并发写入
+		if !useUnprivilegedPing && privilegedAttempt && isPermissionError {
+			c.Warnf("Permission denied for ICMP ping, switching to unprivileged (UDP) mode for all subsequent pings.")
+			useUnprivilegedPing = true // 设置全局标志
+			checkUnprivilegedPingMux.Unlock()
+
+			// 立即用非特权模式重试一次
+			stats, err = runPing(false)
+		} else {
+			checkUnprivilegedPingMux.Unlock()
+		}
+	}
+
+	// --- 处理最终结果 ---
+
+	if err != nil {
+		// 如果(重试后)仍然有错误
+		if errors.Is(err, context.DeadlineExceeded) {
+			return PingResult{IP: ip, Success: false, Error: "timeout"}, nil
+		}
+		// 对于其他错误(包括权限错误, 如果重试也失败了), 返回具体错误信息
+		return PingResult{IP: ip, Success: false, Error: err.Error()}, err
+	}
+
+	// 如果成功
+	return PingResult{
+		IP:      ip,
+		Success: true,
+		RTT:     stats.AvgRtt.Seconds() * 1000,
+	}, nil
 }
 
 func handleWebSocket(c *touka.Context, cfg *config.Config) {
@@ -83,7 +128,7 @@ func handleWebSocket(c *touka.Context, cfg *config.Config) {
 	// 启动一个 goroutine 来定期推送数据
 	go func() {
 		// 首次推送
-		result, err := pingIP(ip, cfg)
+		result, err := pingIP(ip, cfg, c)
 		if err != nil {
 			c.Warnf("Ping error: %v", err)
 		} else {
@@ -101,7 +146,7 @@ func handleWebSocket(c *touka.Context, cfg *config.Config) {
 			select {
 			case <-ticker.C:
 				// 调用 pingIP 函数获取 Ping 结果
-				result, err := pingIP(ip, cfg)
+				result, err := pingIP(ip, cfg, c)
 				if err != nil {
 					c.Warnf("Ping error: %v", err)
 					continue // 继续下一个周期
