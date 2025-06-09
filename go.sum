@@ -8,8 +8,8 @@ github.com/breml/rootcerts v0.2.21 h1:A1LU8pJgdkAfBwPKF0GkPNSyW7stGh80K90LbEiQqY
 github.com/breml/rootcerts v0.2.21/go.mod h1:S/PKh+4d1HUn4HQovEB8hPJZO6pUZYrIhmXBhsegfXw=
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc h1:U9qPSI2PIWSS1VwoXQT9A3Wy9MM3WgvqSxFWenqJduM=
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/fenthope/compress v0.0.2 h1:9YQsOKe2Thruw+le14I8abuQ4qcR8FwPEocpU6x/mT4=
-github.com/fenthope/compress v0.0.2/go.mod h1:/3+aXXRWs9HOOf7fe1m4UhV04/aHco8YxuxeXJeWlzE=
+github.com/fenthope/compress v0.0.3 h1:HerAPZjRwpXzhnC5iunUE0rb1CtcDkAvQHNtKtLH5Ec=
+github.com/fenthope/compress v0.0.3/go.mod h1:/3+aXXRWs9HOOf7fe1m4UhV04/aHco8YxuxeXJeWlzE=
 github.com/fenthope/cors v0.0.2 h1:K/awxNE0kyNo1RJp2FSmOHyVMhVtb4qj37TH/60gUdE=
 github.com/fenthope/cors v0.0.2/go.mod h1:HEN+4FJSU1iMHR0g4VJMdKqXkDkfWTQIwYxSaZ8I+60=
 github.com/fenthope/reco v0.0.1 h1:GYcuXCEKYoctD0dFkiBC+t0RMTOyOiujBCin8bbLR3Y=
