@@ -13,7 +13,7 @@ require (
 	github.com/fenthope/sessions v0.0.1
 	github.com/infinite-iroha/touka v0.1.0
 	github.com/oklog/ulid/v2 v2.1.1
-	go.etcd.io/bbolt v1.4.0
+	go.etcd.io/bbolt v1.4.1
 )
 
 require (
