@@ -12,8 +12,8 @@ github.com/fenthope/compress v0.0.2 h1:9YQsOKe2Thruw+le14I8abuQ4qcR8FwPEocpU6x/m
 github.com/fenthope/compress v0.0.2/go.mod h1:/3+aXXRWs9HOOf7fe1m4UhV04/aHco8YxuxeXJeWlzE=
 github.com/fenthope/cors v0.0.2 h1:K/awxNE0kyNo1RJp2FSmOHyVMhVtb4qj37TH/60gUdE=
 github.com/fenthope/cors v0.0.2/go.mod h1:HEN+4FJSU1iMHR0g4VJMdKqXkDkfWTQIwYxSaZ8I+60=
-github.com/fenthope/reco v0.0.1 h1:GYcuXCEKYoctD0dFkiBC+t0RMTOyOiujBCin8bbLR3Y=
-github.com/fenthope/reco v0.0.1/go.mod h1:mDkGLHte5udWTIcjQTxrABRcf56SSdxBOCLgrRDwI/Y=
+github.com/fenthope/reco v0.0.3 h1:RmnQ0D9a8PWtwOODawitTe4BztTnS9wYwrDbipISNq4=
+github.com/fenthope/reco v0.0.3/go.mod h1:mDkGLHte5udWTIcjQTxrABRcf56SSdxBOCLgrRDwI/Y=
 github.com/fenthope/record v0.0.3 h1:v5urgs5LAkLMlljAT/MjW8fWuRHXPnAraTem5ui7rm4=
 github.com/fenthope/record v0.0.3/go.mod h1:KFEkSc4TDZ3QIhP/wglD32uYVA6X1OUcripiao1DEE4=
 github.com/fenthope/sessions v0.0.1 h1:Dw4mY2yvSuyTqW+1CrojdO0gzv2gfsNsavRZcaAl7LM=
