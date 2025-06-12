@@ -42,7 +42,7 @@ func ListenAndServe(cfg *config.Config, version string) error {
 		logSize = 5
 	}
 
-	router.SetLogger(reco.Config{
+	router.SetLoggerCfg(reco.Config{
 		Level:           reco.LevelInfo,
 		Mode:            reco.ModeText,
 		TimeFormat:      time.RFC3339,
