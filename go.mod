@@ -11,7 +11,7 @@ require (
 	github.com/fenthope/reco v0.0.3
 	github.com/fenthope/record v0.0.3
 	github.com/fenthope/sessions v0.0.1
-	github.com/infinite-iroha/touka v0.2.2
+	github.com/infinite-iroha/touka v0.2.7
 	github.com/oklog/ulid/v2 v2.1.1
 	go.etcd.io/bbolt v1.4.1
 )
