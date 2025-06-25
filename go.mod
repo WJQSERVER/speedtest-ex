@@ -4,14 +4,14 @@ go 1.24.4
 
 require (
 	github.com/WJQSERVER-STUDIO/go-utils/copyb v0.0.4
-	github.com/WJQSERVER-STUDIO/httpc v0.7.0
+	github.com/WJQSERVER-STUDIO/httpc v0.7.1
 	github.com/breml/rootcerts v0.2.21
 	github.com/fenthope/compress v0.0.3
 	github.com/fenthope/cors v0.0.2
 	github.com/fenthope/reco v0.0.3
 	github.com/fenthope/record v0.0.3
 	github.com/fenthope/sessions v0.0.1
-	github.com/infinite-iroha/touka v0.2.2
+	github.com/infinite-iroha/touka v0.2.8
 	github.com/oklog/ulid/v2 v2.1.1
 	go.etcd.io/bbolt v1.4.1
 )
