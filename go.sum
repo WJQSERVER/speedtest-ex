@@ -1,7 +1,7 @@
 github.com/BurntSushi/toml v1.5.0 h1:W5quZX/G/csjUnuI8SUYlsHs9M38FC7znL0lIO+DvMg=
 github.com/BurntSushi/toml v1.5.0/go.mod h1:ukJfTF/6rtPPRCnwkur4qwRxa8vTRFBF0uk2lLoLwho=
-github.com/WJQSERVER-STUDIO/go-utils/copyb v0.0.4 h1:JLtFd00AdFg/TP+dtvIzLkdHwKUGPOAijN1sMtEYoFg=
-github.com/WJQSERVER-STUDIO/go-utils/copyb v0.0.4/go.mod h1:FZ6XE+4TKy4MOfX1xWKe6Rwsg0ucYFCdNh1KLvyKTfc=
+github.com/WJQSERVER-STUDIO/go-utils/copyb v0.0.6 h1:/50VJYXd6jcu+p5BnEBDyiX0nAyGxas1W3DCnrYMxMY=
+github.com/WJQSERVER-STUDIO/go-utils/copyb v0.0.6/go.mod h1:FZ6XE+4TKy4MOfX1xWKe6Rwsg0ucYFCdNh1KLvyKTfc=
 github.com/WJQSERVER-STUDIO/httpc v0.7.0 h1:iHhqlxppJBjlmvsIjvLZKRbWXqSdbeSGGofjHGmqGJc=
 github.com/WJQSERVER-STUDIO/httpc v0.7.0/go.mod h1:M7KNUZjjhCkzzcg9lBPs9YfkImI+7vqjAyjdA19+joE=
 github.com/breml/rootcerts v0.2.21 h1:A1LU8pJgdkAfBwPKF0GkPNSyW7stGh80K90LbEiQqY8=

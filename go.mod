@@ -3,7 +3,7 @@ module speedtest
 go 1.24.4
 
 require (
-	github.com/WJQSERVER-STUDIO/go-utils/copyb v0.0.4
+	github.com/WJQSERVER-STUDIO/go-utils/copyb v0.0.6
 	github.com/WJQSERVER-STUDIO/httpc v0.7.0
 	github.com/breml/rootcerts v0.2.21
 	github.com/fenthope/compress v0.0.3
