@@ -3,8 +3,8 @@ module speedtest
 go 1.24.4
 
 require (
-	github.com/WJQSERVER-STUDIO/go-utils/copyb v0.0.4
-	github.com/WJQSERVER-STUDIO/httpc v0.7.0
+	github.com/WJQSERVER-STUDIO/go-utils/copyb v0.0.6
+	github.com/WJQSERVER-STUDIO/httpc v0.8.0
 	github.com/breml/rootcerts v0.2.21
 	github.com/fenthope/compress v0.0.3
 	github.com/fenthope/cors v0.0.2
@@ -18,7 +18,7 @@ require (
 
 require (
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
-	github.com/go-json-experiment/json v0.0.0-20250517221953-25912455fbc8 // indirect
+	github.com/go-json-experiment/json v0.0.0-20250626171732-1a886bd29d1b // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/context v1.1.2 // indirect
 	github.com/gorilla/securecookie v1.1.2 // indirect
