@@ -32,8 +32,8 @@ github.com/gorilla/sessions v1.4.0 h1:kpIYOp/oi6MG/p5PgxApU8srsSw9tuFbt46Lt7auzq
 github.com/gorilla/sessions v1.4.0/go.mod h1:FLWm50oby91+hl7p/wRxDth9bWSuk0qVL2emc7lT5ik=
 github.com/gorilla/websocket v1.5.3 h1:saDtZ6Pbx/0u+bgYQ3q96pZgCzfhKXGPqt7kZ72aNNg=
 github.com/gorilla/websocket v1.5.3/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
-github.com/infinite-iroha/touka v0.3.0 h1:J1JMF0zUpdjOCeeW4QhL6D+2F15RrksdhO3zxefwhBE=
-github.com/infinite-iroha/touka v0.3.0/go.mod h1:Cmok9Xs8yNRNEUSqiZfi3xtdO1UZYw/yP+phf+zjH2Y=
+github.com/infinite-iroha/touka v0.3.1 h1:djR9hg5MbVpT1dIz2GWo4MZ/kx3l6bJ4nrpzpvdi3uk=
+github.com/infinite-iroha/touka v0.3.1/go.mod h1:pHOYHE4AKoQ1KikHF9JYKIJ4he8um1MzgcddscjCeyg=
 github.com/klauspost/compress v1.18.0 h1:c/Cqfb0r+Yi+JtIEq73FWXVkRonBlf0CRNYc8Zttxdo=
 github.com/klauspost/compress v1.18.0/go.mod h1:2Pp+KzxcywXVXMr50+X0Q/Lsb43OQHYWRCY2AiWywWQ=
 github.com/oklog/ulid/v2 v2.1.1 h1:suPZ4ARWLOJLegGFiZZ1dFAkqzhMjL3J1TzI+5wHz8s=
