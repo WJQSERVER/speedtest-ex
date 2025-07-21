@@ -5,7 +5,7 @@ go 1.24.5
 require (
 	github.com/WJQSERVER-STUDIO/go-utils/copyb v0.0.6
 	github.com/WJQSERVER-STUDIO/httpc v0.8.1
-	github.com/breml/rootcerts v0.3.0
+	github.com/breml/rootcerts v0.3.1
 	github.com/fenthope/compress v0.0.3
 	github.com/fenthope/cors v0.0.2
 	github.com/fenthope/reco v0.0.3

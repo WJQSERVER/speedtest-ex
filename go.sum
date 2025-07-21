@@ -4,8 +4,8 @@ github.com/WJQSERVER-STUDIO/go-utils/copyb v0.0.6 h1:/50VJYXd6jcu+p5BnEBDyiX0nAy
 github.com/WJQSERVER-STUDIO/go-utils/copyb v0.0.6/go.mod h1:FZ6XE+4TKy4MOfX1xWKe6Rwsg0ucYFCdNh1KLvyKTfc=
 github.com/WJQSERVER-STUDIO/httpc v0.8.1 h1:/eG8aYKL3WfQILIRbG+cbzQjPkNHEPTqfGUdQS5rtI4=
 github.com/WJQSERVER-STUDIO/httpc v0.8.1/go.mod h1:mxXBf2hqbQGNHkVy/7wfU7Xi2s09MyZpbY2hyR+4uD4=
-github.com/breml/rootcerts v0.3.0 h1:lED3QcIJvBsWta8faA/EXq9L+5nTwNMRyMTbA9UkzCM=
-github.com/breml/rootcerts v0.3.0/go.mod h1:S/PKh+4d1HUn4HQovEB8hPJZO6pUZYrIhmXBhsegfXw=
+github.com/breml/rootcerts v0.3.1 h1:PTO35OcW58K2ZYtdBykCsZh9k/eRd57bY65EHrKK/xA=
+github.com/breml/rootcerts v0.3.1/go.mod h1:S/PKh+4d1HUn4HQovEB8hPJZO6pUZYrIhmXBhsegfXw=
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc h1:U9qPSI2PIWSS1VwoXQT9A3Wy9MM3WgvqSxFWenqJduM=
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/fenthope/compress v0.0.3 h1:HerAPZjRwpXzhnC5iunUE0rb1CtcDkAvQHNtKtLH5Ec=
