@@ -11,12 +11,13 @@ require (
 	github.com/fenthope/reco v0.0.3
 	github.com/fenthope/record v0.0.3
 	github.com/fenthope/sessions v0.0.1
-	github.com/infinite-iroha/touka v0.3.0
+	github.com/infinite-iroha/touka v0.3.3
 	github.com/oklog/ulid/v2 v2.1.1
 	go.etcd.io/bbolt v1.4.2
 )
 
 require (
+	github.com/WJQSERVER-STUDIO/go-utils/iox v0.0.2 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/go-json-experiment/json v0.0.0-20250714165856-be8212f5270d // indirect
 	github.com/google/uuid v1.6.0 // indirect
