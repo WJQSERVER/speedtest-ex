@@ -4,21 +4,22 @@ go 1.24.5
 
 require (
 	github.com/WJQSERVER-STUDIO/go-utils/copyb v0.0.6
-	github.com/WJQSERVER-STUDIO/httpc v0.8.1
+	github.com/WJQSERVER-STUDIO/httpc v0.8.2
 	github.com/breml/rootcerts v0.3.0
 	github.com/fenthope/compress v0.0.3
 	github.com/fenthope/cors v0.0.2
-	github.com/fenthope/reco v0.0.3
-	github.com/fenthope/record v0.0.3
+	github.com/fenthope/reco v0.0.4
+	github.com/fenthope/record v0.0.4
 	github.com/fenthope/sessions v0.0.1
-	github.com/infinite-iroha/touka v0.3.0
+	github.com/infinite-iroha/touka v0.3.4
 	github.com/oklog/ulid/v2 v2.1.1
 	go.etcd.io/bbolt v1.4.2
 )
 
 require (
+	github.com/WJQSERVER-STUDIO/go-utils/iox v0.0.2 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
-	github.com/go-json-experiment/json v0.0.0-20250714165856-be8212f5270d // indirect
+	github.com/go-json-experiment/json v0.0.0-20250725192818-e39067aee2d2 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/context v1.1.2 // indirect
 	github.com/gorilla/securecookie v1.1.2 // indirect
